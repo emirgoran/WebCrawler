@@ -14,7 +14,7 @@ public class MarkdownWebsiteSummary {
 
         WebsiteData websiteData = new WebsiteData(URL, maxHeadingsDepth, maxUrlDepth);
 
-        TranslateWebsitesRecursively(websiteData);
+        TranslateWebsitesHeadingsRecursively(websiteData);
 
         WriteWebsiteMarkdownRecursive(websiteData, summaryFileWriter, 0);
 
