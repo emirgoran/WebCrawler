@@ -1,10 +1,12 @@
 import org.jsoup.nodes.Document;
 
-import java.nio.file.WatchEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 public class WebsiteData {
+
+    public static final int MAX_INNER_WEBSITES_NUM = 5;
+
     private String URL;
     private WebsiteStatus status;
     private List<Heading> headingsList;
@@ -22,9 +24,9 @@ public class WebsiteData {
     }
 
     private void CrawlWebsite() {
-        Document website = ArgumentsParser.ParseUrl(this.URL);
+        Document webDocument = ArgumentsParser.ParseUrl(this.URL);
 
-        if (website == null) {
+        if (webDocument == null) {
             status = WebsiteStatus.BROKEN;
             return;
         }
@@ -34,9 +36,26 @@ public class WebsiteData {
             return;
         }
 
-        this.headingsList = HeadingsCrawler.GetHeadingsFromDocument(website, HeadingsCrawler.GetHeadingLevelFromInt(maxHeadingsDepth));
-        this.linkedWebsitesList = CrawlWebsites(LinksCrawler.GetUrlsFromWebsite(website), maxHeadingsDepth, maxUrlDepth - 1);
+        CrawlHeadings(webDocument);
+        CrawlLinkedWebsites(webDocument);
         this.status = WebsiteStatus.OK;
+    }
+
+    private void CrawlHeadings(Document document) {
+        Heading.HeadingLevel headingLevel = HeadingsCrawler.GetHeadingLevelFromInt(this.maxHeadingsDepth);
+        this.headingsList = HeadingsCrawler.GetHeadingsFromDocument(document, headingLevel);
+    }
+
+    private void CrawlLinkedWebsites(Document document) {
+        List<String> linkedUrls = LinksCrawler.GetUrlsFromWebsite(document);
+
+        List<WebsiteData> linkedWebsites = CrawlWebsites(linkedUrls, this.maxHeadingsDepth, this.maxUrlDepth - 1);
+
+        if (linkedWebsites.size() > MAX_INNER_WEBSITES_NUM) {
+            this.linkedWebsitesList = linkedWebsites.subList(0 , MAX_INNER_WEBSITES_NUM - 1);
+        } else {
+            this.linkedWebsitesList = linkedWebsites;
+        }
     }
 
     public String getURL() {

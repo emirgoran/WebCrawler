@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class Main {
 
-    public static final int MAX_URL_DEPTH = 3;
+    public static final int MAX_URL_DEPTH = 2;
 
     public static void main(String[] args) throws IOException {
         if (args.length != 3) {
