@@ -27,6 +27,7 @@ public class MarkdownWebsiteSummary {
         sb.append("Max headings depth: " + headingsDepth + NEW_LINE_MD);
         sb.append("Source language: auto-detect" + NEW_LINE_MD);
         sb.append("Target language: " + targetLanguage + NEW_LINE_MD);
+        sb.append("Summary: " + NEW_LINE_MD);
 
         return sb.toString();
     }
@@ -44,6 +45,7 @@ public class MarkdownWebsiteSummary {
             sb.append("\n");
         }
 
+        sb.append("\n");
         fileWriter.write(sb.toString());
     }
 
@@ -54,11 +56,11 @@ public class MarkdownWebsiteSummary {
 
         if (websiteData.getStatus() == WebsiteData.WebsiteStatus.BROKEN) {
             if (initialUrlDepth > 0) {
-                fileWriter.write("--".repeat(initialUrlDepth) + "> Broken link: " + websiteData.getURL() + NEW_LINE_MD);
+                fileWriter.write("<br>" + "--".repeat(initialUrlDepth) + "> Broken link: " + websiteData.getURL() + NEW_LINE_MD);
             }
         } else if (websiteData.getStatus() == WebsiteData.WebsiteStatus.OK) {
             if (initialUrlDepth > 0) {
-                fileWriter.write("--".repeat(initialUrlDepth) + "> " + websiteData.getURL() + NEW_LINE_MD);
+                fileWriter.write("<br>" + "--".repeat(initialUrlDepth) + "> " + websiteData.getURL() + NEW_LINE_MD);
             }
 
             WriteMarkdownHeadings(fileWriter, websiteData.getHeadingsList(), initialUrlDepth);
