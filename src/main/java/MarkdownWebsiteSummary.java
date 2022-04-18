@@ -1,6 +1,6 @@
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 public class MarkdownWebsiteSummary {
 
@@ -13,6 +13,8 @@ public class MarkdownWebsiteSummary {
         summaryFileWriter.write(GetBasicInfoMarkdownString(URL, maxHeadingsDepth, maxUrlDepth, targetLanguage));
 
         WebsiteData websiteData = new WebsiteData(URL, maxHeadingsDepth, maxUrlDepth);
+
+        TranslateWebsitesRecursively(websiteData);
 
         WriteWebsiteMarkdownRecursive(websiteData, summaryFileWriter, 0);
 
@@ -71,6 +73,59 @@ public class MarkdownWebsiteSummary {
         }
 
         return true;
+    }
+
+    public static String CollectHeadingsFromWebsitesRecursive(WebsiteData websiteData) {
+        if (websiteData == null || websiteData.getHeadingsList() == null) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        for (Heading heading : websiteData.getHeadingsList()) {
+            sb.append(heading.getText() + "\n");
+        }
+
+        for (WebsiteData websiteDataInner : websiteData.getLinkedWebsitesList()) {
+            sb.append(CollectHeadingsFromWebsitesRecursive(websiteDataInner));
+        }
+
+        return sb.toString();
+    }
+
+    public static void ApplyHeadingsToWebsitesRecursive(WebsiteData websiteData, Queue<String> headingsQueue) {
+        if (websiteData == null || websiteData.getHeadingsList() == null || headingsQueue == null) {
+            return;
+        }
+
+        for (Heading heading : websiteData.getHeadingsList()) {
+            heading.setText(headingsQueue.poll());
+        }
+
+        for (WebsiteData websiteDataInner : websiteData.getLinkedWebsitesList()) {
+            ApplyHeadingsToWebsitesRecursive(websiteDataInner, headingsQueue);
+        }
+    }
+
+    private static void TranslateWebsitesRecursively(WebsiteData websiteData) {
+        String collectedHeadings = CollectHeadingsFromWebsitesRecursive(websiteData);
+
+        collectedHeadings = collectedHeadings
+                .replace('e', '3')
+                .replace('a', '4')
+                .replace('a', '4')
+                .replace('i', '1')
+                .replace('g', '9')
+                .replace('s', '5');
+
+        String[] headingsArray = collectedHeadings.split("\n");
+        System.out.println(headingsArray.length);
+        Queue<String> headingsQueue = new LinkedList(Arrays.asList(headingsArray));
+
+        System.out.println(headingsQueue);
+        System.out.println(headingsQueue.size());
+
+        ApplyHeadingsToWebsitesRecursive(websiteData, headingsQueue);
     }
 
 }

@@ -12,7 +12,11 @@ public class Heading {
     }
 
     public String getText() {
-        return text;
+        return this.text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public enum HeadingLevel {
