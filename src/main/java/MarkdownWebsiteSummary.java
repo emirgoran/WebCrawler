@@ -107,7 +107,7 @@ public class MarkdownWebsiteSummary {
         }
     }
 
-    private static void TranslateWebsitesRecursively(WebsiteData websiteData) {
+    private static void TranslateWebsitesHeadingsRecursively(WebsiteData websiteData) {
         String collectedHeadings = CollectHeadingsFromWebsitesRecursive(websiteData);
 
         collectedHeadings = collectedHeadings
@@ -119,12 +119,7 @@ public class MarkdownWebsiteSummary {
                 .replace('s', '5');
 
         String[] headingsArray = collectedHeadings.split("\n");
-        System.out.println(headingsArray.length);
         Queue<String> headingsQueue = new LinkedList(Arrays.asList(headingsArray));
-
-        System.out.println(headingsQueue);
-        System.out.println(headingsQueue.size());
-
         ApplyHeadingsToWebsitesRecursive(websiteData, headingsQueue);
     }
 
