@@ -10,24 +10,24 @@ public class MarkdownWebsiteSummary {
     public static void CreateSummaryForWebsite(String URL, int maxHeadingsDepth, int maxUrlDepth, String targetLanguage) throws IOException {
         FileWriter summaryFileWriter = new FileWriter(DEFAULT_SUMMARY_FILE_PATH);
 
-        summaryFileWriter.write(GetBasicInfoMarkdownString(URL, maxHeadingsDepth, maxUrlDepth, targetLanguage));
-
         WebsiteData websiteData = new WebsiteData(URL, maxHeadingsDepth, maxUrlDepth);
 
         TranslateWebsitesHeadingsRecursively(websiteData);
+
+        summaryFileWriter.write(GetBasicInfoMarkdownString(URL, maxHeadingsDepth, maxUrlDepth, targetLanguage, targetLanguage));
 
         WriteWebsiteMarkdownRecursive(websiteData, summaryFileWriter, 0);
 
         summaryFileWriter.close();
     }
 
-    private static String GetBasicInfoMarkdownString(String URL, int headingsDepth, int urlDepth, String targetLanguage) {
+    private static String GetBasicInfoMarkdownString(String URL, int headingsDepth, int urlDepth, String sourceLanguage, String targetLanguage) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("Input URL: " + URL + NEW_LINE_MD);
         sb.append("Max URL depth: " + urlDepth + NEW_LINE_MD);
         sb.append("Max headings depth: " + headingsDepth + NEW_LINE_MD);
-        sb.append("Source language: auto-detect" + NEW_LINE_MD);
+        sb.append("Source language: " + sourceLanguage +" (auto-detected)" + NEW_LINE_MD);
         sb.append("Target language: " + targetLanguage + NEW_LINE_MD);
         sb.append("Summary: " + NEW_LINE_MD);
 
@@ -111,12 +111,7 @@ public class MarkdownWebsiteSummary {
         String collectedHeadings = CollectHeadingsFromWebsitesRecursive(websiteData);
 
         collectedHeadings = collectedHeadings
-                .replace('e', '3')
-                .replace('a', '4')
-                .replace('a', '4')
-                .replace('i', '1')
-                .replace('g', '9')
-                .replace('s', '5');
+                .replace('e', 'E');
 
         String[] headingsArray = collectedHeadings.split("\n");
         Queue<String> headingsQueue = new LinkedList(Arrays.asList(headingsArray));
