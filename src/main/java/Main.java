@@ -13,7 +13,7 @@ public class Main {
         if (args.length != 3) {
             System.err.println("Invalid arguments.\nCorrect format <URL> <DEPTH> <TARGET LANGUAGE_CODE>" +
                     "where DEPTH is an integer greater than 0, and TARGET LANGUAGE CODE is one of the following:\n" +
-                    TranslatorService.GetLanguagesListFormatted());
+                    TranslatorService.GetTargetLanguagesListFormatted());
 
             return;
         }
@@ -48,7 +48,7 @@ public class Main {
         if (!ArgumentsParser.IsSupportedLanguageCode(languageCode))
         {
             System.err.println("Unsupported target language: \"" + languageCode + "\"\n" +
-                    "Supported target languages:\n" + TranslatorService.GetLanguagesListFormatted());
+                    "Supported target languages:\n" + TranslatorService.GetTargetLanguagesListFormatted());
             return false;
         }
 

@@ -10,7 +10,7 @@ public class ArgumentsParser {
             return false;
         }
 
-        return TranslatorService.IsSupportedLanguageCode(language);
+        return TranslatorService.IsSupportedTargetLanguageCode(language);
     }
 
     public static Integer ParseDepth(String depthString)

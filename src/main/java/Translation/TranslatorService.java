@@ -24,7 +24,7 @@ public class TranslatorService {
 
     public static TranslationResponse TranslateText(String originalTextArr[], String targetLanguageCode)
             throws TranslationNotSuccessfulException, TranslationInvalidArgumentException {
-        if (originalTextArr == null || targetLanguageCode == null || !IsSupportedLanguageCode(targetLanguageCode)) {
+        if (originalTextArr == null || targetLanguageCode == null || !IsSupportedTargetLanguageCode(targetLanguageCode)) {
             throw new TranslationInvalidArgumentException();
         }
 
@@ -39,7 +39,7 @@ public class TranslatorService {
             JSONArray translationsJsonArr = new JSONObject(translatedDocument.text()).getJSONArray("translations");
             String[] translatedTextArr = ConvertTranslationsJsonArrayToStringArray(translationsJsonArr);
             String sourceLanguage = GetLanguageFromTranslationJsonArray(translationsJsonArr);
-            String targetLanguage = GetLanguageNameByLanguageCode(targetLanguageCode);
+            String targetLanguage = GetTargetLanguageNameByLanguageCode(targetLanguageCode);
 
             return new TranslationResponse(originalTextArr, translatedTextArr, sourceLanguage, targetLanguage);
         } catch (Exception e) {
@@ -47,11 +47,11 @@ public class TranslatorService {
         }
     }
 
-    public static boolean IsSupportedLanguageCode(String languageCode) {
+    public static boolean IsSupportedTargetLanguageCode(String languageCode) {
         return LANGUAGES.containsKey(languageCode);
     }
 
-    public static String GetLanguageNameByLanguageCode(String languageCode) {
+    public static String GetTargetLanguageNameByLanguageCode(String languageCode) {
         if (LANGUAGES.containsKey(languageCode)) {
             return LANGUAGES.get(languageCode);
         }
@@ -59,7 +59,7 @@ public class TranslatorService {
         return null;
     }
 
-    public static String GetLanguagesListFormatted() {
+    public static String GetTargetLanguagesListFormatted() {
         StringBuilder sb = new StringBuilder();
 
         for (Map.Entry<String, String> entry : LANGUAGES.entrySet()) {
