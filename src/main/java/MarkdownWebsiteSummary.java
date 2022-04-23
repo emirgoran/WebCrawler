@@ -1,3 +1,8 @@
+import Exceptions.TranslationInvalidArgumentException;
+import Exceptions.TranslationNotSuccessfulException;
+import Translation.TranslationResponse;
+import Translation.TranslatorService;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -7,14 +12,14 @@ public class MarkdownWebsiteSummary {
     private final static String DEFAULT_SUMMARY_FILE_PATH = "C:\\MarkdownSummaryWeb\\summary.md";
     private final static String NEW_LINE_MD = "  \n";
 
-    public static void CreateSummaryForWebsite(String URL, int maxHeadingsDepth, int maxUrlDepth, String targetLanguage) throws IOException {
+    public static void CreateSummaryForWebsite(String URL, int maxHeadingsDepth, int maxUrlDepth, String targetLanguageCode) throws IOException, TranslationInvalidArgumentException, TranslationNotSuccessfulException {
         FileWriter summaryFileWriter = new FileWriter(DEFAULT_SUMMARY_FILE_PATH);
 
         WebsiteData websiteData = new WebsiteData(URL, maxHeadingsDepth, maxUrlDepth);
 
-        TranslateWebsitesHeadingsRecursively(websiteData);
+        TranslationResponse translationResponse = TranslateWebsitesHeadingsRecursively(websiteData, targetLanguageCode);
 
-        summaryFileWriter.write(GetBasicInfoMarkdownString(URL, maxHeadingsDepth, maxUrlDepth, targetLanguage, targetLanguage));
+        summaryFileWriter.write(GetBasicInfoMarkdownString(URL, maxHeadingsDepth, maxUrlDepth, translationResponse.getSourceLanguage(), translationResponse.getTargetLanguage()));
 
         WriteWebsiteMarkdownRecursive(websiteData, summaryFileWriter, 0);
 
@@ -107,15 +112,18 @@ public class MarkdownWebsiteSummary {
         }
     }
 
-    private static void TranslateWebsitesHeadingsRecursively(WebsiteData websiteData) {
+    private static TranslationResponse TranslateWebsitesHeadingsRecursively(WebsiteData websiteData, String targetLanguageCode)
+            throws TranslationInvalidArgumentException, TranslationNotSuccessfulException {
         String collectedHeadings = CollectHeadingsFromWebsitesRecursive(websiteData);
 
-        collectedHeadings = collectedHeadings
-                .replace('e', 'E');
-
         String[] headingsArray = collectedHeadings.split("\n");
-        Queue<String> headingsQueue = new LinkedList(Arrays.asList(headingsArray));
+
+        TranslationResponse translationResponse = TranslatorService.TranslateText(headingsArray, targetLanguageCode);
+
+        Queue<String> headingsQueue = new LinkedList(Arrays.asList(translationResponse.getTranslatedText()));
         ApplyHeadingsToWebsitesRecursive(websiteData, headingsQueue);
+
+        return translationResponse;
     }
 
 }
