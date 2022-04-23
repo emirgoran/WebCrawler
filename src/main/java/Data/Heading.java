@@ -1,3 +1,5 @@
+package Data;
+
 public class Heading {
     private HeadingLevel level;
     private String text;

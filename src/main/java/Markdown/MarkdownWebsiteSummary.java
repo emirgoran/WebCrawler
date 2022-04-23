@@ -1,15 +1,20 @@
+package Markdown;
+
+import Data.Heading;
+import Data.WebsiteData;
 import Exceptions.TranslationInvalidArgumentException;
 import Exceptions.TranslationNotSuccessfulException;
 import Translation.TranslationResponse;
 import Translation.TranslatorService;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
 public class MarkdownWebsiteSummary {
 
-    private final static String DEFAULT_SUMMARY_FILE_PATH = "C:\\MarkdownSummaryWeb\\summary.md";
+    public final static String DEFAULT_SUMMARY_FILE_PATH = new File("summary.md").getAbsolutePath();
     private final static String NEW_LINE_MD = "  \n";
 
     public static void CreateSummaryForWebsite(String URL, int maxHeadingsDepth, int maxUrlDepth, String targetLanguageCode) throws IOException, TranslationInvalidArgumentException, TranslationNotSuccessfulException {

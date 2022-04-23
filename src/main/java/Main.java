@@ -1,12 +1,17 @@
 import Exceptions.TranslationInvalidArgumentException;
 import Exceptions.TranslationNotSuccessfulException;
+import Markdown.MarkdownWebsiteSummary;
+import Parsers.ArgumentsParser;
 import Translation.TranslatorService;
 
 import java.io.IOException;
 
+import static Markdown.MarkdownWebsiteSummary.DEFAULT_SUMMARY_FILE_PATH;
+
 public class Main {
 
     public static final int MAX_URL_DEPTH = 2;
+
 
     public static void main(String[] args) throws IOException {
         if (args.length != 3) {
@@ -31,5 +36,7 @@ public class Main {
         } catch (TranslationNotSuccessfulException e) {
             System.err.println("An error occurred during translation procedure!");
         }
+
+        System.out.println("Output file: " + DEFAULT_SUMMARY_FILE_PATH);
     }
 }

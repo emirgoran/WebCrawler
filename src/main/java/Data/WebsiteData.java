@@ -1,3 +1,8 @@
+package Data;
+
+import Crawlers.HeadingsCrawler;
+import Crawlers.LinksCrawler;
+import Parsers.ArgumentsParser;
 import org.jsoup.nodes.Document;
 
 import java.util.ArrayList;

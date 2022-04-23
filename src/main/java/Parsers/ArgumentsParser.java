@@ -1,3 +1,5 @@
+package Parsers;
+
 import Translation.TranslatorService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

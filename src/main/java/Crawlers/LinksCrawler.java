@@ -1,3 +1,5 @@
+package Crawlers;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -7,7 +9,7 @@ import java.util.List;
 
 public class LinksCrawler {
 
-    public static final int MAX_LINKED_WEBSITES = 3;
+    public static final int MAX_LINKED_WEBSITES = 1;
 
     public static List<String> GetUrlsFromWebsite(Document document) {
         List<String> urls = new ArrayList<>();
@@ -17,7 +19,6 @@ public class LinksCrawler {
 
         for (Element link : links) {
             urls.add(link.absUrl("href"));
-            System.out.println(link.absUrl("href"));
 
             if (++pagesCount >= MAX_LINKED_WEBSITES) {
                 break;
@@ -26,5 +27,4 @@ public class LinksCrawler {
 
         return urls;
     }
-
 }
