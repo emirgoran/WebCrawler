@@ -8,15 +8,17 @@ import org.jsoup.nodes.Document;
 
 import java.util.HashMap;
 
-import static Translation.TranslatorService.LANGUAGES;
+import static Translation.TranslatorService.SOURCE_LANGUAGES;
 
 public class TranslationUtils {
     private final static String AUTH_KEY = "99bd2ffe-453c-f103-f71c-7d0233c0aa56:fx";
+    private final static String API_URL_TRANSLATE = "https://api-free.deepl.com/v2/translate";
+    private final static String API_URL_LANGUAGES = "https://api-free.deepl.com/v2/languages";
 
-    static HashMap<String, String> GetLanguagesHashMap() {
+    static HashMap<String, String> GetTargetLanguagesHashMap() {
         HashMap<String, String> languagesHashMap = new HashMap<>();
 
-        Document languagesDocument = GetLanguagesListDocument();
+        Document languagesDocument = GetTargetLanguagesListDocument(true);
 
         if (languagesDocument == null) {
             return languagesHashMap;
@@ -25,12 +27,24 @@ public class TranslationUtils {
         return ConvertLanguagesJsonArrayToHashMap(new JSONArray(languagesDocument.text()));
     }
 
-    private static Document GetLanguagesListDocument() {
+    static HashMap<String, String> GetSourceLanguagesHashMap() {
+        HashMap<String, String> languagesHashMap = new HashMap<>();
+
+        Document languagesDocument = GetTargetLanguagesListDocument(false);
+
+        if (languagesDocument == null) {
+            return languagesHashMap;
+        }
+
+        return ConvertLanguagesJsonArrayToHashMap(new JSONArray(languagesDocument.text()));
+    }
+
+    private static Document GetTargetLanguagesListDocument(boolean isTarget) {
         try {
-            return Jsoup.connect("https://api-free.deepl.com/v2/languages")
+            return Jsoup.connect(API_URL_LANGUAGES)
                     .ignoreContentType(true)
                     .data("auth_key", AUTH_KEY)
-                    .data("type", "target")
+                    .data("type", isTarget ? "target" : "source")
                     .get();
         }
         catch (Exception e) {
@@ -38,19 +52,8 @@ public class TranslationUtils {
         }
     }
 
-    private static HashMap<String, String> ConvertLanguagesJsonArrayToHashMap(JSONArray langArrJson) {
-        HashMap<String, String> languagesHashMap = new HashMap<>();
-
-        for (int i = 0; i < langArrJson.length(); i++) {
-            JSONObject langObjJson = langArrJson.getJSONObject(i);
-            languagesHashMap.put(langObjJson.get("language").toString(), langObjJson.get("name").toString());
-        }
-
-        return languagesHashMap;
-    }
-
     static Document GetTranslatedDocument(String textsArr[], String targetLanguageCode) {
-        Connection connectionBuilder = Jsoup.connect("https://api-free.deepl.com/v2/translate")
+        Connection connectionBuilder = Jsoup.connect(API_URL_TRANSLATE)
                 .ignoreContentType(true)
                 .cookie("auth_key", AUTH_KEY)
                 .data("auth_key", AUTH_KEY)
@@ -68,6 +71,17 @@ public class TranslationUtils {
         }
     }
 
+    private static HashMap<String, String> ConvertLanguagesJsonArrayToHashMap(JSONArray langArrJson) {
+        HashMap<String, String> languagesHashMap = new HashMap<>();
+
+        for (int i = 0; i < langArrJson.length(); i++) {
+            JSONObject langObjJson = langArrJson.getJSONObject(i);
+            languagesHashMap.put(langObjJson.get("language").toString(), langObjJson.get("name").toString());
+        }
+
+        return languagesHashMap;
+    }
+
     static String[] ConvertTranslationsJsonArrayToStringArray(JSONArray translationsJsonArr) {
         String[] translationTexts = new String[translationsJsonArr.length()];
 
@@ -78,18 +92,18 @@ public class TranslationUtils {
         return translationTexts;
     }
 
-    static String GetLanguageFromTranslationJsonArray(JSONArray translationsJsonArr) {
+    static String GetSourceLanguageFromTranslationJsonArray(JSONArray translationsJsonArr) {
         try {
-            return GetLanguageNameByLanguageCode(translationsJsonArr.getJSONObject(0).get("detected_source_language").toString());
+            return GetSourceLanguageNameByLanguageCode(translationsJsonArr.getJSONObject(0).get("detected_source_language").toString());
         }
         catch (Exception e) {
             return null;
         }
     }
 
-    public static String GetLanguageNameByLanguageCode(String languageCode) {
-        if (LANGUAGES.containsKey(languageCode)) {
-            return LANGUAGES.get(languageCode);
+    public static String GetSourceLanguageNameByLanguageCode(String languageCode) {
+        if (SOURCE_LANGUAGES.containsKey(languageCode)) {
+            return SOURCE_LANGUAGES.get(languageCode);
         }
 
         return null;

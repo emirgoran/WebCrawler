@@ -13,14 +13,8 @@ import static Translation.TranslationUtils.*;
 
 public class TranslatorService {
 
-    protected static final HashMap<String, String> LANGUAGES = GetLanguagesHashMap();
-
-    public static void main(String[] args) throws TranslationInvalidArgumentException, TranslationNotSuccessfulException {
-        var translation = TranslateText(new String[] {"Hello guys!", "What's up?"}, "IT");
-
-        System.out.println(translation.getSourceLanguage());
-        System.out.println(translation.getTargetLanguage());
-    }
+    protected static final HashMap<String, String> TARGET_LANGUAGES = GetTargetLanguagesHashMap();
+    protected static final HashMap<String, String> SOURCE_LANGUAGES = GetSourceLanguagesHashMap();
 
     public static TranslationResponse TranslateText(String originalTextArr[], String targetLanguageCode)
             throws TranslationNotSuccessfulException, TranslationInvalidArgumentException {
@@ -31,29 +25,26 @@ public class TranslatorService {
         try {
             Document translatedDocument = GetTranslatedDocument(originalTextArr, targetLanguageCode);
 
-            if (translatedDocument == null) {
-                throw new TranslationNotSuccessfulException();
-            }
-
-            System.out.println(translatedDocument.text());
             JSONArray translationsJsonArr = new JSONObject(translatedDocument.text()).getJSONArray("translations");
+
             String[] translatedTextArr = ConvertTranslationsJsonArrayToStringArray(translationsJsonArr);
-            String sourceLanguage = GetLanguageFromTranslationJsonArray(translationsJsonArr);
+            String sourceLanguage = GetSourceLanguageFromTranslationJsonArray(translationsJsonArr);
             String targetLanguage = GetTargetLanguageNameByLanguageCode(targetLanguageCode);
 
             return new TranslationResponse(originalTextArr, translatedTextArr, sourceLanguage, targetLanguage);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new TranslationNotSuccessfulException();
         }
     }
 
     public static boolean IsSupportedTargetLanguageCode(String languageCode) {
-        return LANGUAGES.containsKey(languageCode);
+        return TARGET_LANGUAGES.containsKey(languageCode);
     }
 
     public static String GetTargetLanguageNameByLanguageCode(String languageCode) {
-        if (LANGUAGES.containsKey(languageCode)) {
-            return LANGUAGES.get(languageCode);
+        if (TARGET_LANGUAGES.containsKey(languageCode)) {
+            return TARGET_LANGUAGES.get(languageCode);
         }
 
         return null;
@@ -62,7 +53,7 @@ public class TranslatorService {
     public static String GetTargetLanguagesListFormatted() {
         StringBuilder sb = new StringBuilder();
 
-        for (Map.Entry<String, String> entry : LANGUAGES.entrySet()) {
+        for (Map.Entry<String, String> entry : TARGET_LANGUAGES.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
 
@@ -71,5 +62,4 @@ public class TranslatorService {
 
         return sb.toString();
     }
-
 }

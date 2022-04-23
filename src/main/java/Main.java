@@ -1,7 +1,6 @@
 import Exceptions.TranslationInvalidArgumentException;
 import Exceptions.TranslationNotSuccessfulException;
 import Translation.TranslatorService;
-import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 
@@ -18,51 +17,19 @@ public class Main {
             return;
         }
 
-        String URL = args[0], TARGET_LANGUAGE = args[2];
-        Integer DEPTH = ArgumentsParser.ParseDepth(args[1]);
+        String url = args[0], targetLanguage = args[2];
+        Integer maxHeadingDepth = ArgumentsParser.ParseDepth(args[1]);
 
-        if (!ValidateDepth(DEPTH) || !ValidateLanguage(TARGET_LANGUAGE) || !ValidateUrl(URL)) {
+        if (!ArgumentsParser.ValidateDepth(maxHeadingDepth) || !ArgumentsParser.ValidateLanguage(targetLanguage)|| !ArgumentsParser.ValidateUrl(url)) {
             return;
         }
 
         try {
-            MarkdownWebsiteSummary.CreateSummaryForWebsite(URL, DEPTH, MAX_URL_DEPTH, TARGET_LANGUAGE);
+            MarkdownWebsiteSummary.CreateSummaryForWebsite(url, maxHeadingDepth, MAX_URL_DEPTH, targetLanguage);
         } catch (TranslationInvalidArgumentException e) {
             System.err.println("Could not find any text to translate!");
         } catch (TranslationNotSuccessfulException e) {
             System.err.println("An error occurred during translation procedure!");
         }
     }
-
-    public static boolean ValidateDepth(Integer depth) {
-        if (depth == null || depth < 1)
-        {
-            System.err.println("Unsupported depth! Depth should be a positive, non-zero integer.");
-            return false;
-        }
-
-        return true;
-    }
-
-    public static boolean ValidateLanguage(String languageCode) {
-        if (!ArgumentsParser.IsSupportedLanguageCode(languageCode))
-        {
-            System.err.println("Unsupported target language: \"" + languageCode + "\"\n" +
-                    "Supported target languages:\n" + TranslatorService.GetTargetLanguagesListFormatted());
-            return false;
-        }
-
-        return true;
-    }
-
-    public static boolean ValidateUrl(String URL) {
-        Document parsedDocument = ArgumentsParser.ParseUrl(URL);
-        if (parsedDocument == null) {
-            System.err.println("The entered URL might be invalid or there is no connection to the server!");
-            return false;
-        }
-
-        return true;
-    }
-
 }
