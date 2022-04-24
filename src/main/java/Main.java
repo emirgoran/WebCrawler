@@ -7,6 +7,7 @@ import Parsers.DocumentParser;
 import Parsers.WebsiteDocumentParser;
 import Translation.Translator;
 import Translation.Translation;
+import Translation.TranslatorApiImpl;
 import Translation.TranslatorService;
 
 import java.io.File;
@@ -25,7 +26,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        Translator translator = new TranslatorService();
+        Translator translator = new TranslatorService(new TranslatorApiImpl());
         DocumentParser documentParser = new WebsiteDocumentParser();
 
         if (args.length != 3) {

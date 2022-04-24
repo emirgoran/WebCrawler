@@ -4,8 +4,6 @@ import Exceptions.TranslationInvalidArgumentException;
 import Exceptions.TranslationNotSuccessfulException;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.util.HashMap;
@@ -13,8 +11,15 @@ import java.util.Map;
 
 public class TranslatorService implements Translator {
 
-    protected HashMap<String, String> TARGET_LANGUAGES = GetTargetLanguagesHashMap();
-    protected HashMap<String, String> SOURCE_LANGUAGES = GetSourceLanguagesHashMap();
+    protected HashMap<String, String> TARGET_LANGUAGES;
+    protected HashMap<String, String> SOURCE_LANGUAGES;
+    TranslatorApi translatorApi;
+
+    public TranslatorService(TranslatorApi translatorApi) {
+        TARGET_LANGUAGES = GetLanguagesHashMap(translatorApi.GetTargetLanguagesListDocument(true));
+        SOURCE_LANGUAGES = GetLanguagesHashMap(translatorApi.GetTargetLanguagesListDocument(false));
+        this.translatorApi = translatorApi;
+    }
 
     public Translation TranslateText(String originalTextArr[], String targetLanguageCode)
             throws TranslationNotSuccessfulException, TranslationInvalidArgumentException {
@@ -23,7 +28,7 @@ public class TranslatorService implements Translator {
         }
 
         try {
-            Document translatedDocument = GetTranslatedDocument(originalTextArr, targetLanguageCode);
+            Document translatedDocument = translatorApi.GetTranslatedDocument(originalTextArr, targetLanguageCode);
 
             JSONArray translationsJsonArr = new JSONObject(translatedDocument.text()).getJSONArray("translations");
 
@@ -82,14 +87,8 @@ public class TranslatorService implements Translator {
 
     /* STATIC PART */
 
-    private final static String AUTH_KEY = "99bd2ffe-453c-f103-f71c-7d0233c0aa56:fx";
-    private final static String API_URL_TRANSLATE = "https://api-free.deepl.com/v2/translate";
-    private final static String API_URL_LANGUAGES = "https://api-free.deepl.com/v2/languages";
-
-    static HashMap<String, String> GetTargetLanguagesHashMap() {
+    static HashMap<String, String> GetLanguagesHashMap(Document languagesDocument) {
         HashMap<String, String> languagesHashMap = new HashMap<>();
-
-        Document languagesDocument = GetTargetLanguagesListDocument(true);
 
         if (languagesDocument == null) {
             return languagesHashMap;
@@ -98,49 +97,7 @@ public class TranslatorService implements Translator {
         return ConvertLanguagesJsonArrayToHashMap(new JSONArray(languagesDocument.text()));
     }
 
-    static HashMap<String, String> GetSourceLanguagesHashMap() {
-        HashMap<String, String> languagesHashMap = new HashMap<>();
 
-        Document languagesDocument = GetTargetLanguagesListDocument(false);
-
-        if (languagesDocument == null) {
-            return languagesHashMap;
-        }
-
-        return ConvertLanguagesJsonArrayToHashMap(new JSONArray(languagesDocument.text()));
-    }
-
-    private static Document GetTargetLanguagesListDocument(boolean isTarget) {
-        try {
-            return Jsoup.connect(API_URL_LANGUAGES)
-                    .ignoreContentType(true)
-                    .data("auth_key", AUTH_KEY)
-                    .data("type", isTarget ? "target" : "source")
-                    .get();
-        }
-        catch (Exception e) {
-            return null;
-        }
-    }
-
-    static Document GetTranslatedDocument(String textsArr[], String targetLanguageCode) {
-        Connection connectionBuilder = Jsoup.connect(API_URL_TRANSLATE)
-                .ignoreContentType(true)
-                .cookie("auth_key", AUTH_KEY)
-                .data("auth_key", AUTH_KEY)
-                .data("target_lang", targetLanguageCode);
-
-        for (int i = 0; i < textsArr.length; i++) {
-            connectionBuilder.data("text", textsArr[i]);
-        }
-
-        try {
-            return connectionBuilder.get();
-        }
-        catch (Exception e) {
-            return null;
-        }
-    }
 
     private static HashMap<String, String> ConvertLanguagesJsonArrayToHashMap(JSONArray langArrJson) {
         HashMap<String, String> languagesHashMap = new HashMap<>();
