@@ -1,12 +1,12 @@
 package Translation;
 
-public class TranslationResponse {
+public class Translation {
     private String originalText[];
     private String translatedText[];
     private String sourceLanguage;
     private String targetLanguage;
 
-    public TranslationResponse(String originalText[], String[] translatedText, String sourceLanguage, String targetLanguage) {
+    public Translation(String originalText[], String[] translatedText, String sourceLanguage, String targetLanguage) {
         this.originalText = originalText;
         this.translatedText = translatedText;
         this.sourceLanguage = sourceLanguage;

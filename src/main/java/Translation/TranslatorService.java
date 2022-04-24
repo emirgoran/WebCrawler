@@ -16,7 +16,7 @@ public class TranslatorService {
     protected static final HashMap<String, String> TARGET_LANGUAGES = GetTargetLanguagesHashMap();
     protected static final HashMap<String, String> SOURCE_LANGUAGES = GetSourceLanguagesHashMap();
 
-    public static TranslationResponse TranslateText(String originalTextArr[], String targetLanguageCode)
+    public static Translation TranslateText(String originalTextArr[], String targetLanguageCode)
             throws TranslationNotSuccessfulException, TranslationInvalidArgumentException {
         if (originalTextArr == null || targetLanguageCode == null || !IsSupportedTargetLanguageCode(targetLanguageCode)) {
             throw new TranslationInvalidArgumentException();
@@ -31,7 +31,7 @@ public class TranslatorService {
             String sourceLanguage = GetSourceLanguageFromTranslationJsonArray(translationsJsonArr);
             String targetLanguage = GetTargetLanguageNameByLanguageCode(targetLanguageCode);
 
-            return new TranslationResponse(originalTextArr, translatedTextArr, sourceLanguage, targetLanguage);
+            return new Translation(originalTextArr, translatedTextArr, sourceLanguage, targetLanguage);
         }
         catch (Exception e) {
             throw new TranslationNotSuccessfulException();
