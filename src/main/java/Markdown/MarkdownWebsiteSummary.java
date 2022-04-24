@@ -31,7 +31,7 @@ public class MarkdownWebsiteSummary {
         sb.append("Max headings depth: " + headingsDepth + NEW_LINE_MD);
         sb.append("Source language: " + sourceLanguage +" (auto-detected)" + NEW_LINE_MD);
         sb.append("Target language: " + targetLanguage + NEW_LINE_MD);
-        sb.append("Summary: " + NEW_LINE_MD);
+        sb.append("Summary:" + NEW_LINE_MD);
 
         return sb.toString();
     }
@@ -41,7 +41,7 @@ public class MarkdownWebsiteSummary {
 
         for (Heading heading : headingsList) {
             sb.append("#".repeat(heading.getLevel().ordinal()));
-            sb.append(" ");
+            sb.append(urlDepth != 0 ? " " : "");
             sb.append("--".repeat(urlDepth));
             sb.append(urlDepth != 0 ? ">" : "");
             sb.append(" ");
