@@ -1,7 +1,6 @@
 package Parsers;
 
 import Translation.Translator;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 public class ArgumentsParser {
