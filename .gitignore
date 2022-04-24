@@ -2,3 +2,4 @@
 target/classes/*
 .idea/*
 summary.md
+target/test-classes/*
