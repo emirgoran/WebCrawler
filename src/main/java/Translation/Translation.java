@@ -13,10 +13,6 @@ public class Translation {
         this.targetLanguage = targetLanguage;
     }
 
-    public String[] getOriginalText() {
-        return originalText;
-    }
-
     public String[] getTranslatedText() {
         return translatedText;
     }
