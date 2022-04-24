@@ -12,7 +12,6 @@ public class Main {
 
     public static final int MAX_URL_DEPTH = 2;
 
-
     public static void main(String[] args) throws IOException {
         if (args.length != 3) {
             System.err.println("Invalid arguments.\nCorrect format <URL> <DEPTH> <TARGET LANGUAGE_CODE>" +

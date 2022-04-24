@@ -12,6 +12,10 @@ public class WebsiteData {
 
     public static final int MAX_INNER_WEBSITES_NUM = 5;
 
+    public enum WebsiteStatus {
+        OK, NOT_CRAWLED, BROKEN
+    }
+
     private String URL;
     private WebsiteStatus status;
     private List<Heading> headingsList;
@@ -26,6 +30,22 @@ public class WebsiteData {
         this.maxUrlDepth = maxUrlDepth;
 
         CrawlWebsite();
+    }
+
+    public String getURL() {
+        return URL;
+    }
+
+    public WebsiteStatus getStatus() {
+        return status;
+    }
+
+    public List<Heading> getHeadingsList() {
+        return headingsList;
+    }
+
+    public List<WebsiteData> getLinkedWebsitesList() {
+        return linkedWebsitesList;
     }
 
     private void CrawlWebsite() {
@@ -46,11 +66,14 @@ public class WebsiteData {
         this.status = WebsiteStatus.OK;
     }
 
+    /* Get headings from the web document. */
     private void CrawlHeadings(Document document) {
         Heading.HeadingLevel headingLevel = HeadingsCrawler.GetHeadingLevelFromInt(this.maxHeadingsDepth);
         this.headingsList = HeadingsCrawler.GetHeadingsFromDocument(document, headingLevel);
     }
 
+    /* Find URLs on a webpage, then recursively crawl those URLs until the maxUrlDepth is reached. */
+    /* Also limit the number of linked websites due to the number of websites getting out of control. */
     private void CrawlLinkedWebsites(Document document) {
         List<String> linkedUrls = LinksCrawler.GetUrlsFromWebsite(document);
 
@@ -63,22 +86,7 @@ public class WebsiteData {
         }
     }
 
-    public String getURL() {
-        return URL;
-    }
-
-    public WebsiteStatus getStatus() {
-        return status;
-    }
-
-    public List<Heading> getHeadingsList() {
-        return headingsList;
-    }
-
-    public List<WebsiteData> getLinkedWebsitesList() {
-        return linkedWebsitesList;
-    }
-
+    /* Recursively crawl websites until the maxUrlDepth is reached. */
     public static List<WebsiteData> CrawlWebsites(List<String> URLs, int maxHeadingsDepth, int maxUrlDepth) {
         List<WebsiteData> websiteDataList = new ArrayList<>();
 
@@ -87,9 +95,5 @@ public class WebsiteData {
         }
 
         return websiteDataList;
-    }
-
-    public enum WebsiteStatus {
-        OK, NOT_CRAWLED, BROKEN
     }
 }
