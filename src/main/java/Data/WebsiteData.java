@@ -2,13 +2,14 @@ package Data;
 
 import Crawlers.HeadingsCrawler;
 import Crawlers.LinksCrawler;
+import Crawlers.WebsiteCrawler;
 import Parsers.ArgumentsParser;
 import org.jsoup.nodes.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WebsiteData {
+public class WebsiteData implements WebsiteCrawler {
 
     public static final int MAX_INNER_WEBSITES_NUM = 5;
 
@@ -17,15 +18,19 @@ public class WebsiteData {
     }
 
     private String URL;
-    private WebsiteStatus status;
     private List<Heading> headingsList;
     private List<WebsiteData> linkedWebsitesList;
 
-    private int maxUrlDepth;
+    private WebsiteStatus status;
     private int maxHeadingsDepth;
+    private int maxUrlDepth;
+
 
     public WebsiteData(String URL, int maxHeadingsDepth, int maxUrlDepth) {
         this.URL = URL;
+        this.headingsList = new ArrayList<>();
+        this.linkedWebsitesList = new ArrayList<>();
+
         this.status = WebsiteStatus.BROKEN;
         this.maxHeadingsDepth = maxHeadingsDepth;
         this.maxUrlDepth = maxUrlDepth;
@@ -53,6 +58,18 @@ public class WebsiteData {
 
     public int getMaxHeadingsDepth() {
         return maxHeadingsDepth;
+    }
+
+    public void setHeadingsList(List<Heading> headingsList) {
+        this.headingsList = headingsList;
+    }
+
+    public void setLinkedWebsitesList(List<WebsiteData> linkedWebsitesList) {
+        this.linkedWebsitesList = linkedWebsitesList;
+    }
+
+    public void setStatus(WebsiteStatus status) {
+        this.status = status;
     }
 
     public void CrawlWebsite() {
@@ -94,7 +111,7 @@ public class WebsiteData {
     }
 
     /* Recursively crawl websites until the maxUrlDepth is reached. */
-    public static List<WebsiteData> CrawlWebsites(List<String> URLs, int maxHeadingsDepth, int maxUrlDepth) {
+    public List<WebsiteData> CrawlWebsites(List<String> URLs, int maxHeadingsDepth, int maxUrlDepth) {
         List<WebsiteData> websiteDataList = new ArrayList<>();
 
         for (String url : URLs) {

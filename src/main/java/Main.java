@@ -17,7 +17,6 @@ import java.util.Queue;
 
 import static Markdown.MarkdownWebsiteSummary.*;
 
-
 public class Main {
     public final static String DEFAULT_SUMMARY_FILE_PATH = new File("summary.md").getAbsolutePath();
     public static final int MAX_URL_DEPTH = 2;
@@ -48,7 +47,7 @@ public class Main {
 
             websiteData.CrawlWebsite();
 
-            Translation translation = TranslateWebsitesHeadingsRecursively(websiteData, targetLanguage);
+            Translation translation = TranslateWebsitesHeadingsRecursively(websiteData, translator, targetLanguage);
 
             StringBuilder markdownStringBuilder = MarkdownWebsiteSummary.CreateSummaryForWebsite(websiteData, translation.getSourceLanguage(), translation.getTargetLanguage());
 
@@ -64,11 +63,11 @@ public class Main {
         System.out.println("Output file: " + DEFAULT_SUMMARY_FILE_PATH);
     }
 
-    public static Translation TranslateWebsitesHeadingsRecursively(WebsiteData websiteData, String targetLanguageCode)
+    public static Translation TranslateWebsitesHeadingsRecursively(WebsiteData websiteData, Translator translator, String targetLanguageCode)
             throws TranslationInvalidArgumentException, TranslationNotSuccessfulException {
         List<String> collectedHeadings = CollectHeadingsFromWebsitesRecursive(websiteData);
 
-        Translation translation =  new TranslatorService().TranslateText(collectedHeadings.toArray(new String[0]), targetLanguageCode);
+        Translation translation =  translator.TranslateText(collectedHeadings.toArray(new String[0]), targetLanguageCode);
 
         Queue<String> headingsQueue = new LinkedList(Arrays.asList(translation.getTranslatedText()));
         ApplyHeadingsToWebsitesRecursive(websiteData, headingsQueue);
