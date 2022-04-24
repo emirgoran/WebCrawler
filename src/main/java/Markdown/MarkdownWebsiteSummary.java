@@ -4,34 +4,26 @@ import Data.Heading;
 import Data.WebsiteData;
 import Exceptions.TranslationInvalidArgumentException;
 import Exceptions.TranslationNotSuccessfulException;
-import Translation.Translation;
-import Translation.TranslatorService;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 
 public class MarkdownWebsiteSummary {
 
-    public final static String DEFAULT_SUMMARY_FILE_PATH = new File("summary.md").getAbsolutePath();
     private final static String NEW_LINE_MD = "  \n";
 
-    public static void CreateSummaryForWebsite(String URL, int maxHeadingsDepth, int maxUrlDepth, String targetLanguageCode) throws IOException, TranslationInvalidArgumentException, TranslationNotSuccessfulException {
-        FileWriter summaryFileWriter = new FileWriter(DEFAULT_SUMMARY_FILE_PATH);
+    public static StringBuilder CreateSummaryForWebsite(WebsiteData websiteData, String sourceLanguageName, String targetLanguageName)
+            throws TranslationInvalidArgumentException, TranslationNotSuccessfulException {
 
-        WebsiteData websiteData = new WebsiteData(URL, maxHeadingsDepth, maxUrlDepth);
+        StringBuilder stringBuilder = new StringBuilder();
 
-        Translation translation = TranslateWebsitesHeadingsRecursively(websiteData, targetLanguageCode);
+        stringBuilder.append(GetBasicInfoMarkdownString(websiteData.getURL(), websiteData.getMaxHeadingsDepth(), websiteData.getMaxUrlDepth(), sourceLanguageName, targetLanguageName));
 
-        summaryFileWriter.write(GetBasicInfoMarkdownString(URL, maxHeadingsDepth, maxUrlDepth, translation.getSourceLanguage(), translation.getTargetLanguage()));
+        WriteWebsiteMarkdownRecursive(websiteData, stringBuilder, 0);
 
-        WriteWebsiteMarkdownRecursive(websiteData, summaryFileWriter, 0);
-
-        summaryFileWriter.close();
+        return stringBuilder;
     }
 
-    private static String GetBasicInfoMarkdownString(String URL, int headingsDepth, int urlDepth, String sourceLanguage, String targetLanguage) {
+    public static String GetBasicInfoMarkdownString(String URL, int headingsDepth, int urlDepth, String sourceLanguage, String targetLanguage) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("Input URL: " + URL + NEW_LINE_MD);
@@ -44,7 +36,7 @@ public class MarkdownWebsiteSummary {
         return sb.toString();
     }
 
-    private static void WriteMarkdownHeadings(FileWriter fileWriter, List<Heading> headingsList, int urlDepth) throws IOException {
+    public static StringBuilder GetMarkdownHeadingsStringBuilder(List<Heading> headingsList, int urlDepth) {
         StringBuilder sb = new StringBuilder();
 
         for (Heading heading : headingsList) {
@@ -58,49 +50,50 @@ public class MarkdownWebsiteSummary {
         }
 
         sb.append("\n");
-        fileWriter.write(sb.toString());
+
+        return sb;
     }
 
-    public static boolean WriteWebsiteMarkdownRecursive(WebsiteData websiteData, FileWriter fileWriter, int initialUrlDepth) throws IOException {
-        if (websiteData == null || fileWriter == null || initialUrlDepth < 0) {
+    public static boolean WriteWebsiteMarkdownRecursive(WebsiteData websiteData, StringBuilder stringBuilder, int initialUrlDepth) {
+        if (websiteData == null || stringBuilder == null || initialUrlDepth < 0) {
             return false;
         }
 
         if (websiteData.getStatus() == WebsiteData.WebsiteStatus.BROKEN) {
             if (initialUrlDepth > 0) {
-                fileWriter.write("<br>" + "--".repeat(initialUrlDepth) + "> Broken link: " + websiteData.getURL() + NEW_LINE_MD);
+                stringBuilder.append("<br>" + "--".repeat(initialUrlDepth) + "> Broken link: " + websiteData.getURL() + NEW_LINE_MD);
             }
         } else if (websiteData.getStatus() == WebsiteData.WebsiteStatus.OK) {
             if (initialUrlDepth > 0) {
-                fileWriter.write("<br>" + "--".repeat(initialUrlDepth) + "> " + websiteData.getURL() + NEW_LINE_MD);
+                stringBuilder.append("<br>" + "--".repeat(initialUrlDepth) + "> " + websiteData.getURL() + NEW_LINE_MD);
             }
 
-            WriteMarkdownHeadings(fileWriter, websiteData.getHeadingsList(), initialUrlDepth);
+            stringBuilder.append(GetMarkdownHeadingsStringBuilder(websiteData.getHeadingsList(), initialUrlDepth));
 
             for (WebsiteData websiteDataInner : websiteData.getLinkedWebsitesList()) {
-                WriteWebsiteMarkdownRecursive(websiteDataInner, fileWriter, initialUrlDepth + 1);
+                WriteWebsiteMarkdownRecursive(websiteDataInner, stringBuilder, initialUrlDepth + 1);
             }
         }
 
         return true;
     }
 
-    public static String CollectHeadingsFromWebsitesRecursive(WebsiteData websiteData) {
+    public static List<String> CollectHeadingsFromWebsitesRecursive(WebsiteData websiteData) {
         if (websiteData == null || websiteData.getHeadingsList() == null) {
-            return "";
+            return new ArrayList<>();
         }
 
-        StringBuilder sb = new StringBuilder();
+        List<String> headingsStringList = new LinkedList<>();
 
         for (Heading heading : websiteData.getHeadingsList()) {
-            sb.append(heading.getText() + "\n");
+            headingsStringList.add(heading.getText());
         }
 
         for (WebsiteData websiteDataInner : websiteData.getLinkedWebsitesList()) {
-            sb.append(CollectHeadingsFromWebsitesRecursive(websiteDataInner));
+            headingsStringList.addAll(CollectHeadingsFromWebsitesRecursive(websiteDataInner));
         }
 
-        return sb.toString();
+        return headingsStringList;
     }
 
     public static void ApplyHeadingsToWebsitesRecursive(WebsiteData websiteData, Queue<String> headingsQueue) {
@@ -116,19 +109,4 @@ public class MarkdownWebsiteSummary {
             ApplyHeadingsToWebsitesRecursive(websiteDataInner, headingsQueue);
         }
     }
-
-    private static Translation TranslateWebsitesHeadingsRecursively(WebsiteData websiteData, String targetLanguageCode)
-            throws TranslationInvalidArgumentException, TranslationNotSuccessfulException {
-        String collectedHeadings = CollectHeadingsFromWebsitesRecursive(websiteData);
-
-        String[] headingsArray = collectedHeadings.split("\n");
-
-        Translation translation = TranslatorService.TranslateText(headingsArray, targetLanguageCode);
-
-        Queue<String> headingsQueue = new LinkedList(Arrays.asList(translation.getTranslatedText()));
-        ApplyHeadingsToWebsitesRecursive(websiteData, headingsQueue);
-
-        return translation;
-    }
-
 }

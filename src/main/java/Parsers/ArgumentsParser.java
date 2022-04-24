@@ -1,18 +1,18 @@
 package Parsers;
 
-import Translation.TranslatorService;
+import Translation.Translator;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 public class ArgumentsParser {
 
-    public static boolean IsSupportedLanguageCode(String language)
+    public static boolean IsSupportedLanguageCode(Translator translator, String language)
     {
         if (language == null || language.length() == 0) {
             return false;
         }
 
-        return TranslatorService.IsSupportedTargetLanguageCode(language);
+        return translator.IsSupportedTargetLanguageCode(language);
     }
 
     public static Integer ParseDepth(String depthString)
@@ -43,11 +43,11 @@ public class ArgumentsParser {
         return true;
     }
 
-    public static boolean ValidateLanguage(String languageCode) {
-        if (!ArgumentsParser.IsSupportedLanguageCode(languageCode))
+    public static boolean ValidateLanguage(Translator translator, String languageCode) {
+        if (!ArgumentsParser.IsSupportedLanguageCode(translator, languageCode))
         {
             System.err.println("Unsupported target language: \"" + languageCode + "\"\n" +
-                    "Supported target languages:\n" + TranslatorService.GetTargetLanguagesListFormatted());
+                    "Supported target languages:\n" + translator.GetTargetLanguagesListFormatted());
             return false;
         }
 

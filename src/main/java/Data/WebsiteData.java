@@ -20,6 +20,7 @@ public class WebsiteData {
     private WebsiteStatus status;
     private List<Heading> headingsList;
     private List<WebsiteData> linkedWebsitesList;
+
     private int maxUrlDepth;
     private int maxHeadingsDepth;
 
@@ -46,6 +47,14 @@ public class WebsiteData {
 
     public List<WebsiteData> getLinkedWebsitesList() {
         return linkedWebsitesList;
+    }
+
+    public int getMaxUrlDepth() {
+        return maxUrlDepth;
+    }
+
+    public int getMaxHeadingsDepth() {
+        return maxHeadingsDepth;
     }
 
     private void CrawlWebsite() {
