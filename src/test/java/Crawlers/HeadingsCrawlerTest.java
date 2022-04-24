@@ -10,6 +10,15 @@ import java.util.List;
 class HeadingsCrawlerTest {
 
     @Test
+    void getHeadingsFromDocument_testNoHeadingLevels_returnsOk() {
+        Document document = new Document("localhost");
+
+        List<Heading> headingsList = HeadingsCrawler.GetHeadingsFromDocument(document, Heading.HeadingLevel.H6);
+
+        Assertions.assertEquals(0, headingsList.size());
+    }
+
+    @Test
     void getHeadingsFromDocument_testAllHeadingLevels_returnsOk() {
         Document document = new Document("localhost");
         document.append("<h0> Heading 0 </h0>"); // invalid one
