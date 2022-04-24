@@ -4,6 +4,7 @@ import Crawlers.HeadingsCrawler;
 import Crawlers.LinksCrawler;
 import Crawlers.WebsiteCrawler;
 import Parsers.ArgumentsParser;
+import Parsers.DocumentParser;
 import org.jsoup.nodes.Document;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class Website implements WebsiteCrawler {
         OK, NOT_CRAWLED, BROKEN
     }
 
+    private DocumentParser documentParser;
     private String URL;
     private List<Heading> headingsList;
     private List<Website> linkedWebsitesList;
@@ -26,7 +28,8 @@ public class Website implements WebsiteCrawler {
     private int maxUrlDepth;
 
 
-    public Website(String URL, int maxHeadingsDepth, int maxUrlDepth) {
+    public Website(DocumentParser documentParser, String URL, int maxHeadingsDepth, int maxUrlDepth) {
+        this.documentParser = documentParser;
         this.URL = URL;
         this.headingsList = new ArrayList<>();
         this.linkedWebsitesList = new ArrayList<>();
@@ -73,7 +76,7 @@ public class Website implements WebsiteCrawler {
     }
 
     public void CrawlWebsite() {
-        Document webDocument = ArgumentsParser.ParseUrl(this.URL);
+        Document webDocument = documentParser.ParseUrl(this.URL);
 
         if (webDocument == null) {
             status = WebsiteStatus.BROKEN;
@@ -115,7 +118,7 @@ public class Website implements WebsiteCrawler {
         List<Website> websiteList = new ArrayList<>();
 
         for (String url : URLs) {
-            Website website = new Website(url, maxHeadingsDepth, maxUrlDepth);
+            Website website = new Website(documentParser, url, maxHeadingsDepth, maxUrlDepth);
             website.CrawlWebsite();
             websiteList.add(website);
         }

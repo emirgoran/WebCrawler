@@ -3,6 +3,8 @@ import Exceptions.TranslationInvalidArgumentException;
 import Exceptions.TranslationNotSuccessfulException;
 import Markdown.MarkdownWebsiteSummary;
 import Parsers.ArgumentsParser;
+import Parsers.DocumentParser;
+import Parsers.WebsiteDocumentParser;
 import Translation.Translator;
 import Translation.Translation;
 import Translation.TranslatorService;
@@ -24,6 +26,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         Translator translator = new TranslatorService();
+        DocumentParser documentParser = new WebsiteDocumentParser();
 
         if (args.length != 3) {
             System.err.println("Invalid arguments.\nCorrect format <URL> <DEPTH> <TARGET LANGUAGE_CODE>" +
@@ -36,14 +39,14 @@ public class Main {
         String url = args[0], targetLanguage = args[2];
         Integer maxHeadingDepth = ArgumentsParser.ParseDepth(args[1]);
 
-        if (!ArgumentsParser.ValidateDepth(maxHeadingDepth) || !ArgumentsParser.ValidateLanguage(translator, targetLanguage)|| !ArgumentsParser.ValidateUrl(url)) {
+        if (!ArgumentsParser.ValidateDepth(maxHeadingDepth) || !ArgumentsParser.ValidateLanguage(translator, targetLanguage)|| !ArgumentsParser.ValidateUrl(documentParser, url)) {
             return;
         }
 
         try {
             FileWriter summaryFileWriter = new FileWriter(DEFAULT_SUMMARY_FILE_PATH);
 
-            Website website = new Website(url, maxHeadingDepth, MAX_URL_DEPTH);
+            Website website = new Website(documentParser, url, maxHeadingDepth, MAX_URL_DEPTH);
 
             website.CrawlWebsite();
 

@@ -24,15 +24,6 @@ public class ArgumentsParser {
         }
     }
 
-    public static Document ParseUrl(String URL)
-    {
-        try {
-            return Jsoup.connect(URL).get();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
     public static boolean ValidateDepth(Integer depth) {
         if (depth == null || depth < 1)
         {
@@ -54,8 +45,8 @@ public class ArgumentsParser {
         return true;
     }
 
-    public static boolean ValidateUrl(String URL) {
-        Document parsedDocument = ArgumentsParser.ParseUrl(URL);
+    public static boolean ValidateUrl(DocumentParser documentParser, String URL) {
+        Document parsedDocument = documentParser.ParseUrl(URL);
         if (parsedDocument == null) {
             System.err.println("The entered URL might be invalid or there is no connection to the server!");
             return false;
