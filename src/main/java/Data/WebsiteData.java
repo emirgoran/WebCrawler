@@ -29,8 +29,6 @@ public class WebsiteData {
         this.status = WebsiteStatus.BROKEN;
         this.maxHeadingsDepth = maxHeadingsDepth;
         this.maxUrlDepth = maxUrlDepth;
-
-        CrawlWebsite();
     }
 
     public String getURL() {
@@ -57,7 +55,7 @@ public class WebsiteData {
         return maxHeadingsDepth;
     }
 
-    private void CrawlWebsite() {
+    public void CrawlWebsite() {
         Document webDocument = ArgumentsParser.ParseUrl(this.URL);
 
         if (webDocument == null) {
@@ -100,7 +98,9 @@ public class WebsiteData {
         List<WebsiteData> websiteDataList = new ArrayList<>();
 
         for (String url : URLs) {
-            websiteDataList.add(new WebsiteData(url, maxHeadingsDepth, maxUrlDepth));
+            WebsiteData websiteData = new WebsiteData(url, maxHeadingsDepth, maxUrlDepth);
+            websiteData.CrawlWebsite();
+            websiteDataList.add(websiteData);
         }
 
         return websiteDataList;

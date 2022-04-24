@@ -46,6 +46,8 @@ public class Main {
 
             WebsiteData websiteData = new WebsiteData(url, maxHeadingDepth, MAX_URL_DEPTH);
 
+            websiteData.CrawlWebsite();
+
             Translation translation = TranslateWebsitesHeadingsRecursively(websiteData, targetLanguage);
 
             StringBuilder markdownStringBuilder = MarkdownWebsiteSummary.CreateSummaryForWebsite(websiteData, translation.getSourceLanguage(), translation.getTargetLanguage());
