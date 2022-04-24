@@ -1,4 +1,4 @@
-import Data.WebsiteData;
+import Data.Website;
 import Exceptions.TranslationInvalidArgumentException;
 import Exceptions.TranslationNotSuccessfulException;
 import Markdown.MarkdownWebsiteSummary;
@@ -43,13 +43,13 @@ public class Main {
         try {
             FileWriter summaryFileWriter = new FileWriter(DEFAULT_SUMMARY_FILE_PATH);
 
-            WebsiteData websiteData = new WebsiteData(url, maxHeadingDepth, MAX_URL_DEPTH);
+            Website website = new Website(url, maxHeadingDepth, MAX_URL_DEPTH);
 
-            websiteData.CrawlWebsite();
+            website.CrawlWebsite();
 
-            Translation translation = TranslateWebsitesHeadingsRecursively(websiteData, translator, targetLanguage);
+            Translation translation = TranslateWebsitesHeadingsRecursively(website, translator, targetLanguage);
 
-            StringBuilder markdownStringBuilder = MarkdownWebsiteSummary.CreateSummaryForWebsite(websiteData, translation.getSourceLanguage(), translation.getTargetLanguage());
+            StringBuilder markdownStringBuilder = MarkdownWebsiteSummary.CreateSummaryForWebsite(website, translation.getSourceLanguage(), translation.getTargetLanguage());
 
             summaryFileWriter.write(markdownStringBuilder.toString());
 
@@ -63,14 +63,14 @@ public class Main {
         System.out.println("Output file: " + DEFAULT_SUMMARY_FILE_PATH);
     }
 
-    public static Translation TranslateWebsitesHeadingsRecursively(WebsiteData websiteData, Translator translator, String targetLanguageCode)
+    public static Translation TranslateWebsitesHeadingsRecursively(Website website, Translator translator, String targetLanguageCode)
             throws TranslationInvalidArgumentException, TranslationNotSuccessfulException {
-        List<String> collectedHeadings = CollectHeadingsFromWebsitesRecursive(websiteData);
+        List<String> collectedHeadings = CollectHeadingsFromWebsitesRecursive(website);
 
         Translation translation =  translator.TranslateText(collectedHeadings.toArray(new String[0]), targetLanguageCode);
 
         Queue<String> headingsQueue = new LinkedList(Arrays.asList(translation.getTranslatedText()));
-        ApplyHeadingsToWebsitesRecursive(websiteData, headingsQueue);
+        ApplyHeadingsToWebsitesRecursive(website, headingsQueue);
 
         return translation;
     }

@@ -1,6 +1,6 @@
 package Crawlers;
 
-import Data.WebsiteData;
+import Data.Website;
 
 import java.util.List;
 
@@ -8,5 +8,5 @@ public interface WebsiteCrawler {
 
     void CrawlWebsite();
 
-    List<WebsiteData> CrawlWebsites(List<String> URLs, int maxHeadingsDepth, int maxUrlDepth);
+    List<Website> CrawlWebsites(List<String> URLs, int maxHeadingsDepth, int maxUrlDepth);
 }

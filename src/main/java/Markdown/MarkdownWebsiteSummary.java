@@ -1,7 +1,7 @@
 package Markdown;
 
 import Data.Heading;
-import Data.WebsiteData;
+import Data.Website;
 import Exceptions.TranslationInvalidArgumentException;
 import Exceptions.TranslationNotSuccessfulException;
 
@@ -11,14 +11,14 @@ public class MarkdownWebsiteSummary {
 
     private final static String NEW_LINE_MD = "  \n";
 
-    public static StringBuilder CreateSummaryForWebsite(WebsiteData websiteData, String sourceLanguageName, String targetLanguageName)
+    public static StringBuilder CreateSummaryForWebsite(Website website, String sourceLanguageName, String targetLanguageName)
             throws TranslationInvalidArgumentException, TranslationNotSuccessfulException {
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(GetBasicInfoMarkdownString(websiteData.getURL(), websiteData.getMaxHeadingsDepth(), websiteData.getMaxUrlDepth(), sourceLanguageName, targetLanguageName));
+        stringBuilder.append(GetBasicInfoMarkdownString(website.getURL(), website.getMaxHeadingsDepth(), website.getMaxUrlDepth(), sourceLanguageName, targetLanguageName));
 
-        WriteWebsiteMarkdownRecursive(websiteData, stringBuilder, 0);
+        WriteWebsiteMarkdownRecursive(website, stringBuilder, 0);
 
         return stringBuilder;
     }
@@ -54,59 +54,59 @@ public class MarkdownWebsiteSummary {
         return sb;
     }
 
-    public static boolean WriteWebsiteMarkdownRecursive(WebsiteData websiteData, StringBuilder stringBuilder, int initialUrlDepth) {
-        if (websiteData == null || stringBuilder == null || initialUrlDepth < 0) {
+    public static boolean WriteWebsiteMarkdownRecursive(Website website, StringBuilder stringBuilder, int initialUrlDepth) {
+        if (website == null || stringBuilder == null || initialUrlDepth < 0) {
             return false;
         }
 
-        if (websiteData.getStatus() == WebsiteData.WebsiteStatus.BROKEN) {
+        if (website.getStatus() == Website.WebsiteStatus.BROKEN) {
             if (initialUrlDepth > 0) {
-                stringBuilder.append("<br>" + "--".repeat(initialUrlDepth) + "> Broken link: " + websiteData.getURL() + NEW_LINE_MD);
+                stringBuilder.append("<br>" + "--".repeat(initialUrlDepth) + "> Broken link: " + website.getURL() + NEW_LINE_MD);
             }
-        } else if (websiteData.getStatus() == WebsiteData.WebsiteStatus.OK) {
+        } else if (website.getStatus() == Website.WebsiteStatus.OK) {
             if (initialUrlDepth > 0) {
-                stringBuilder.append("<br>" + "--".repeat(initialUrlDepth) + "> " + websiteData.getURL() + NEW_LINE_MD);
+                stringBuilder.append("<br>" + "--".repeat(initialUrlDepth) + "> " + website.getURL() + NEW_LINE_MD);
             }
 
-            stringBuilder.append(GetMarkdownHeadingsStringBuilder(websiteData.getHeadingsList(), initialUrlDepth));
+            stringBuilder.append(GetMarkdownHeadingsStringBuilder(website.getHeadingsList(), initialUrlDepth));
 
-            for (WebsiteData websiteDataInner : websiteData.getLinkedWebsitesList()) {
-                WriteWebsiteMarkdownRecursive(websiteDataInner, stringBuilder, initialUrlDepth + 1);
+            for (Website websiteInner : website.getLinkedWebsitesList()) {
+                WriteWebsiteMarkdownRecursive(websiteInner, stringBuilder, initialUrlDepth + 1);
             }
         }
 
         return true;
     }
 
-    public static List<String> CollectHeadingsFromWebsitesRecursive(WebsiteData websiteData) {
-        if (websiteData == null || websiteData.getHeadingsList() == null) {
+    public static List<String> CollectHeadingsFromWebsitesRecursive(Website website) {
+        if (website == null || website.getHeadingsList() == null) {
             return new ArrayList<>();
         }
 
         List<String> headingsStringList = new LinkedList<>();
 
-        for (Heading heading : websiteData.getHeadingsList()) {
+        for (Heading heading : website.getHeadingsList()) {
             headingsStringList.add(heading.getText());
         }
 
-        for (WebsiteData websiteDataInner : websiteData.getLinkedWebsitesList()) {
-            headingsStringList.addAll(CollectHeadingsFromWebsitesRecursive(websiteDataInner));
+        for (Website websiteInner : website.getLinkedWebsitesList()) {
+            headingsStringList.addAll(CollectHeadingsFromWebsitesRecursive(websiteInner));
         }
 
         return headingsStringList;
     }
 
-    public static void ApplyHeadingsToWebsitesRecursive(WebsiteData websiteData, Queue<String> headingsQueue) {
-        if (websiteData == null || websiteData.getHeadingsList() == null || headingsQueue == null) {
+    public static void ApplyHeadingsToWebsitesRecursive(Website website, Queue<String> headingsQueue) {
+        if (website == null || website.getHeadingsList() == null || headingsQueue == null) {
             return;
         }
 
-        for (Heading heading : websiteData.getHeadingsList()) {
+        for (Heading heading : website.getHeadingsList()) {
             heading.setText(headingsQueue.poll());
         }
 
-        for (WebsiteData websiteDataInner : websiteData.getLinkedWebsitesList()) {
-            ApplyHeadingsToWebsitesRecursive(websiteDataInner, headingsQueue);
+        for (Website websiteInner : website.getLinkedWebsitesList()) {
+            ApplyHeadingsToWebsitesRecursive(websiteInner, headingsQueue);
         }
     }
 }

@@ -9,7 +9,7 @@ import org.jsoup.nodes.Document;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WebsiteData implements WebsiteCrawler {
+public class Website implements WebsiteCrawler {
 
     public static final int MAX_INNER_WEBSITES_NUM = 5;
 
@@ -19,14 +19,14 @@ public class WebsiteData implements WebsiteCrawler {
 
     private String URL;
     private List<Heading> headingsList;
-    private List<WebsiteData> linkedWebsitesList;
+    private List<Website> linkedWebsitesList;
 
     private WebsiteStatus status;
     private int maxHeadingsDepth;
     private int maxUrlDepth;
 
 
-    public WebsiteData(String URL, int maxHeadingsDepth, int maxUrlDepth) {
+    public Website(String URL, int maxHeadingsDepth, int maxUrlDepth) {
         this.URL = URL;
         this.headingsList = new ArrayList<>();
         this.linkedWebsitesList = new ArrayList<>();
@@ -48,7 +48,7 @@ public class WebsiteData implements WebsiteCrawler {
         return headingsList;
     }
 
-    public List<WebsiteData> getLinkedWebsitesList() {
+    public List<Website> getLinkedWebsitesList() {
         return linkedWebsitesList;
     }
 
@@ -64,7 +64,7 @@ public class WebsiteData implements WebsiteCrawler {
         this.headingsList = headingsList;
     }
 
-    public void setLinkedWebsitesList(List<WebsiteData> linkedWebsitesList) {
+    public void setLinkedWebsitesList(List<Website> linkedWebsitesList) {
         this.linkedWebsitesList = linkedWebsitesList;
     }
 
@@ -101,7 +101,7 @@ public class WebsiteData implements WebsiteCrawler {
     private void CrawlLinkedWebsites(Document document) {
         List<String> linkedUrls = LinksCrawler.GetUrlsFromWebsite(document);
 
-        List<WebsiteData> linkedWebsites = CrawlWebsites(linkedUrls, this.maxHeadingsDepth, this.maxUrlDepth - 1);
+        List<Website> linkedWebsites = CrawlWebsites(linkedUrls, this.maxHeadingsDepth, this.maxUrlDepth - 1);
 
         if (linkedWebsites.size() > MAX_INNER_WEBSITES_NUM) {
             this.linkedWebsitesList = linkedWebsites.subList(0 , MAX_INNER_WEBSITES_NUM - 1);
@@ -111,15 +111,15 @@ public class WebsiteData implements WebsiteCrawler {
     }
 
     /* Recursively crawl websites until the maxUrlDepth is reached. */
-    public List<WebsiteData> CrawlWebsites(List<String> URLs, int maxHeadingsDepth, int maxUrlDepth) {
-        List<WebsiteData> websiteDataList = new ArrayList<>();
+    public List<Website> CrawlWebsites(List<String> URLs, int maxHeadingsDepth, int maxUrlDepth) {
+        List<Website> websiteList = new ArrayList<>();
 
         for (String url : URLs) {
-            WebsiteData websiteData = new WebsiteData(url, maxHeadingsDepth, maxUrlDepth);
-            websiteData.CrawlWebsite();
-            websiteDataList.add(websiteData);
+            Website website = new Website(url, maxHeadingsDepth, maxUrlDepth);
+            website.CrawlWebsite();
+            websiteList.add(website);
         }
 
-        return websiteDataList;
+        return websiteList;
     }
 }
