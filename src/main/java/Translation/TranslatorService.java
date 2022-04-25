@@ -30,8 +30,6 @@ public class TranslatorService implements Translator {
         try {
             Document translatedDocument = translatorApi.GetTranslatedDocument(originalTextArr, targetLanguageCode);
 
-            System.out.println(translatedDocument.text());
-
             JSONArray translationsJsonArr = new JSONObject(translatedDocument.text()).getJSONArray("translations");
 
             String[] translatedTextArr = ConvertTranslationsJsonArrayToStringArray(translationsJsonArr);

@@ -45,19 +45,7 @@ public class Main {
         }
 
         try {
-            FileWriter summaryFileWriter = new FileWriter(DEFAULT_SUMMARY_FILE_PATH);
-
-            Website website = new Website(documentParser, url, maxHeadingDepth, MAX_URL_DEPTH);
-
-            website.CrawlWebsite();
-
-            Translation translation = TranslateWebsitesHeadingsRecursively(website, translator, targetLanguage);
-
-            StringBuilder markdownStringBuilder = MarkdownWebsiteSummary.CreateSummaryForWebsite(website, translation.getSourceLanguage(), translation.getTargetLanguage());
-
-            summaryFileWriter.write(markdownStringBuilder.toString());
-
-            summaryFileWriter.close();
+            TranslateDocumentAndWriteToFile(documentParser, url, maxHeadingDepth, translator, targetLanguage);
         } catch (TranslationInvalidArgumentException e) {
             System.err.println("Could not find any text to translate!");
         } catch (TranslationNotSuccessfulException e) {
@@ -65,6 +53,23 @@ public class Main {
         }
 
         System.out.println("Output file: " + DEFAULT_SUMMARY_FILE_PATH);
+    }
+
+    public static void TranslateDocumentAndWriteToFile(DocumentParser documentParser, String url, Integer maxHeadingDepth, Translator translator, String targetLanguage)
+            throws IOException, TranslationInvalidArgumentException, TranslationNotSuccessfulException {
+        FileWriter summaryFileWriter = new FileWriter(DEFAULT_SUMMARY_FILE_PATH);
+
+        Website website = new Website(documentParser, url, maxHeadingDepth, MAX_URL_DEPTH);
+
+        website.CrawlWebsite();
+
+        Translation translation = TranslateWebsitesHeadingsRecursively(website, translator, targetLanguage);
+
+        StringBuilder markdownStringBuilder = MarkdownWebsiteSummary.CreateSummaryForWebsite(website, translation.getSourceLanguage(), translation.getTargetLanguage());
+
+        summaryFileWriter.write(markdownStringBuilder.toString());
+
+        summaryFileWriter.close();
     }
 
     public static Translation TranslateWebsitesHeadingsRecursively(Website website, Translator translator, String targetLanguageCode)
