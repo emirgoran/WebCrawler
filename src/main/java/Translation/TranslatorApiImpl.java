@@ -11,7 +11,7 @@ public class TranslatorApiImpl implements TranslatorApi {
     private final static String API_URL_TRANSLATE = "https://api-free.deepl.com/v2/translate";
     private final static String API_URL_LANGUAGES = "https://api-free.deepl.com/v2/languages";
 
-    public Document GetTargetLanguagesListDocument(boolean isTarget) {
+    public Document GetLanguagesListDocument(boolean isTarget) {
         try {
             return Jsoup.connect(API_URL_LANGUAGES)
                     .ignoreContentType(true)

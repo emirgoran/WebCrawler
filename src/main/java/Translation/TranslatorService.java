@@ -16,8 +16,8 @@ public class TranslatorService implements Translator {
     TranslatorApi translatorApi;
 
     public TranslatorService(TranslatorApi translatorApi) {
-        TARGET_LANGUAGES = GetLanguagesHashMap(translatorApi.GetTargetLanguagesListDocument(true));
-        SOURCE_LANGUAGES = GetLanguagesHashMap(translatorApi.GetTargetLanguagesListDocument(false));
+        TARGET_LANGUAGES = GetLanguagesHashMap(translatorApi.GetLanguagesListDocument(true));
+        SOURCE_LANGUAGES = GetLanguagesHashMap(translatorApi.GetLanguagesListDocument(false));
         this.translatorApi = translatorApi;
     }
 
@@ -29,6 +29,8 @@ public class TranslatorService implements Translator {
 
         try {
             Document translatedDocument = translatorApi.GetTranslatedDocument(originalTextArr, targetLanguageCode);
+
+            System.out.println(translatedDocument.text());
 
             JSONArray translationsJsonArr = new JSONObject(translatedDocument.text()).getJSONArray("translations");
 
@@ -76,7 +78,7 @@ public class TranslatorService implements Translator {
         return null;
     }
 
-    protected String GetSourceLanguageFromTranslationJsonArray(JSONArray translationsJsonArr) {
+    public String GetSourceLanguageFromTranslationJsonArray(JSONArray translationsJsonArr) {
         try {
             return GetSourceLanguageNameByLanguageCode(translationsJsonArr.getJSONObject(0).get("detected_source_language").toString());
         }
@@ -85,9 +87,7 @@ public class TranslatorService implements Translator {
         }
     }
 
-    /* STATIC PART */
-
-    static HashMap<String, String> GetLanguagesHashMap(Document languagesDocument) {
+    public static HashMap<String, String> GetLanguagesHashMap(Document languagesDocument) {
         HashMap<String, String> languagesHashMap = new HashMap<>();
 
         if (languagesDocument == null) {
@@ -97,9 +97,7 @@ public class TranslatorService implements Translator {
         return ConvertLanguagesJsonArrayToHashMap(new JSONArray(languagesDocument.text()));
     }
 
-
-
-    private static HashMap<String, String> ConvertLanguagesJsonArrayToHashMap(JSONArray langArrJson) {
+    public static HashMap<String, String> ConvertLanguagesJsonArrayToHashMap(JSONArray langArrJson) {
         HashMap<String, String> languagesHashMap = new HashMap<>();
 
         for (int i = 0; i < langArrJson.length(); i++) {
@@ -110,7 +108,7 @@ public class TranslatorService implements Translator {
         return languagesHashMap;
     }
 
-    static String[] ConvertTranslationsJsonArrayToStringArray(JSONArray translationsJsonArr) {
+    public static String[] ConvertTranslationsJsonArrayToStringArray(JSONArray translationsJsonArr) {
         String[] translationTexts = new String[translationsJsonArr.length()];
 
         for (int i = 0; i < translationsJsonArr.length(); i++) {
