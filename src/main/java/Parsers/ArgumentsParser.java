@@ -47,10 +47,26 @@ public class ArgumentsParser {
     public static boolean ValidateUrl(DocumentParser documentParser, String URL) {
         Document parsedDocument = documentParser.ParseUrl(URL);
         if (parsedDocument == null) {
-            System.err.println("The entered URL might be invalid or there is no connection to the server!");
             return false;
         }
 
         return true;
+    }
+
+    public static boolean ValidateUrls(DocumentParser documentParser, String[] URLs) {
+        if (URLs == null || URLs.length == 0) {
+            return false;
+        }
+
+        boolean result = true;
+
+        for (String url : URLs) {
+            if (!ValidateUrl(documentParser, url)) {
+                System.err.println("Invalid URL: " + url);
+                result = false;
+            }
+        }
+
+        return result;
     }
 }

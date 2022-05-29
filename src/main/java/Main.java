@@ -29,23 +29,24 @@ public class Main {
         Translator translator = new TranslatorService(new TranslatorApiImpl());
         DocumentParser documentParser = new WebsiteDocumentParser();
 
-        if (args.length != 3) {
-            System.err.println("Invalid arguments.\nCorrect format <URL> <DEPTH> <TARGET LANGUAGE_CODE>" +
+        if (args.length < 3) {
+            System.err.println("Invalid arguments.\nCorrect format <HEADINGS_DEPTH> <TARGET_LANGUAGE_CODE> <URL ...>" +
                     "where DEPTH is an integer greater than 0, and TARGET LANGUAGE CODE is one of the following:\n" +
                     translator.GetTargetLanguagesListFormatted());
 
             return;
         }
 
-        String url = args[0], targetLanguage = args[2];
-        Integer maxHeadingDepth = ArgumentsParser.ParseDepth(args[1]);
+        Integer maxHeadingDepth = ArgumentsParser.ParseDepth(args[0]);
+        String targetLanguage = args[1];
+        String[] urls = Arrays.copyOfRange(args, 2, args.length);
 
-        if (!ArgumentsParser.ValidateDepth(maxHeadingDepth) || !ArgumentsParser.ValidateLanguage(translator, targetLanguage)|| !ArgumentsParser.ValidateUrl(documentParser, url)) {
+        if (!ArgumentsParser.ValidateDepth(maxHeadingDepth) || !ArgumentsParser.ValidateLanguage(translator, targetLanguage)|| !ArgumentsParser.ValidateUrls(documentParser, urls)) {
             return;
         }
 
         try {
-            TranslateDocumentAndWriteToFile(documentParser, url, maxHeadingDepth, translator, targetLanguage);
+            TranslateDocumentAndWriteToFile(documentParser, urls, maxHeadingDepth, translator, targetLanguage);
         } catch (TranslationInvalidArgumentException e) {
             System.err.println("Could not find any text to translate!");
         } catch (TranslationNotSuccessfulException e) {
@@ -55,19 +56,21 @@ public class Main {
         System.out.println("Output file: " + DEFAULT_SUMMARY_FILE_PATH);
     }
 
-    public static void TranslateDocumentAndWriteToFile(DocumentParser documentParser, String url, Integer maxHeadingDepth, Translator translator, String targetLanguage)
+    public static void TranslateDocumentAndWriteToFile(DocumentParser documentParser, String[] urls, Integer maxHeadingDepth, Translator translator, String targetLanguage)
             throws IOException, TranslationInvalidArgumentException, TranslationNotSuccessfulException {
         FileWriter summaryFileWriter = new FileWriter(DEFAULT_SUMMARY_FILE_PATH);
 
-        Website website = new Website(documentParser, url, maxHeadingDepth, MAX_URL_DEPTH);
+        for (String url : urls) {
+            Website website = new Website(documentParser, url, maxHeadingDepth, MAX_URL_DEPTH);
 
-        website.CrawlWebsite();
+            website.CrawlWebsite();
 
-        Translation translation = TranslateWebsitesHeadingsRecursively(website, translator, targetLanguage);
+            Translation translation = TranslateWebsitesHeadingsRecursively(website, translator, targetLanguage);
 
-        StringBuilder markdownStringBuilder = MarkdownWebsiteSummary.CreateSummaryForWebsite(website, translation.getSourceLanguage(), translation.getTargetLanguage());
+            StringBuilder markdownStringBuilder = MarkdownWebsiteSummary.CreateSummaryForWebsite(website, translation.getSourceLanguage(), translation.getTargetLanguage());
 
-        summaryFileWriter.write(markdownStringBuilder.toString());
+            summaryFileWriter.write(markdownStringBuilder.toString());
+        }
 
         summaryFileWriter.close();
     }
