@@ -4,9 +4,9 @@
 3. in Translation.TranslatorApiImpl: AUTH_KEY - authentication key to the translation API (use your own, you will need to register with a credit card for free 500.000 characters/month)
 
 ### The program accepts exactly 3 arguments (in this exact order):
-1. URL - a URL to the web page you want to crawl
-2. HEADING_DEPTH - represents level of HTML headings (from 1 to 6)
-3. LANGUAGE_CODE - an abbreviation of a language (e.g. IT for Italian, DE for German, etc.)
+1. HEADING_DEPTH - represents level of HTML headings (from 1 to 6)
+2. LANGUAGE_CODE - an abbreviation of a language (e.g. IT for Italian, DE for German, etc.)
+3. URLs - a list of URLs to the web pages you want to crawl
 
 ### Supported target languages (dynamically fetched):  
 DE: German  
@@ -43,3 +43,4 @@ To run the program in Java you can execute the Main class with following argumen
 To run the program with Maven you can execute the following:  
 mvn exec:java -Dexec.mainClass=Main "-Dexec.args=URL HEADING_DEPTH LANGUAGE_CODE"
 
+After a successful execution the result will be saved in a file with name "summary.md" in the same directory where this README file is located.  
