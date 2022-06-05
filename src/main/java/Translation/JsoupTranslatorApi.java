@@ -5,7 +5,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 /* Not unit testable! Requires internet connection and authentication token to work. */
-public class TranslatorApiImpl implements TranslatorApi {
+public class JsoupTranslatorApi implements TranslatorApi {
 
     // Please use your own. This one will be deactivated.
     private final static String AUTH_KEY = "99bd2ffe-453c-f103-f71c-7d0233c0aa56:fx";
