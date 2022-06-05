@@ -14,7 +14,7 @@ public class JsoupTranslatorApi implements TranslatorApi {
     private final static String API_URL_TRANSLATE = "https://api-free.deepl.com/v2/translate";
     private final static String API_URL_LANGUAGES = "https://api-free.deepl.com/v2/languages";
 
-    public JSONArray GetLanguagesListDocument(boolean isTarget) {
+    public JSONArray GetLanguagesJsonArray(boolean isTarget) {
         try {
             Document document = Jsoup.connect(API_URL_LANGUAGES)
                     .ignoreContentType(true)
@@ -29,7 +29,7 @@ public class JsoupTranslatorApi implements TranslatorApi {
         }
     }
 
-    public JSONArray GetTranslatedDocument(String[] textsArr, String targetLanguageCode) {
+    public JSONArray GetTranslationsJsonArray(String[] textsArr, String targetLanguageCode) {
         Connection connectionBuilder = Jsoup.connect(API_URL_TRANSLATE)
                 .ignoreContentType(true)
                 .cookie("auth_key", AUTH_KEY)
@@ -41,11 +41,10 @@ public class JsoupTranslatorApi implements TranslatorApi {
         }
 
         try {
-            new JSONObject(connectionBuilder.get().text()).getJSONArray("translations");
+            return new JSONObject(connectionBuilder.get().text()).getJSONArray("translations");
         }
         catch (Exception e) {
             return null;
         }
-        return null;
     }
 }

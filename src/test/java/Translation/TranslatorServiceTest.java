@@ -151,13 +151,13 @@ class TranslatorServiceTest {
     private TranslatorApi getTestTranslatorApi() {
         TranslatorApi translatorApi = mock(TranslatorApi.class);
 
-        when(translatorApi.GetLanguagesListDocument(false))
+        when(translatorApi.GetLanguagesJsonArray(false))
                 .thenReturn(getLanguagesTestJsonArray());
 
-        when(translatorApi.GetLanguagesListDocument(true))
+        when(translatorApi.GetLanguagesJsonArray(true))
                 .thenReturn(getLanguagesTestJsonArray());
 
-        when(translatorApi.GetTranslatedDocument(any(), anyString())).thenReturn(getTranslationTestJsonArray());
+        when(translatorApi.GetTranslationsJsonArray(any(), anyString())).thenReturn(getTranslationTestJsonArray());
 
         return translatorApi;
     }

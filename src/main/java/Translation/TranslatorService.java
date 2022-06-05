@@ -4,7 +4,6 @@ import Exceptions.TranslationInvalidArgumentException;
 import Exceptions.TranslationNotSuccessfulException;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.jsoup.nodes.Document;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,8 +15,8 @@ public class TranslatorService implements Translator {
     TranslatorApi translatorApi;
 
     public TranslatorService(TranslatorApi translatorApi) {
-        TARGET_LANGUAGES = GetLanguagesHashMap(translatorApi.GetLanguagesListDocument(true));
-        SOURCE_LANGUAGES = GetLanguagesHashMap(translatorApi.GetLanguagesListDocument(false));
+        TARGET_LANGUAGES = GetLanguagesHashMap(translatorApi.GetLanguagesJsonArray(true));
+        SOURCE_LANGUAGES = GetLanguagesHashMap(translatorApi.GetLanguagesJsonArray(false));
         this.translatorApi = translatorApi;
     }
 
@@ -28,7 +27,7 @@ public class TranslatorService implements Translator {
         }
 
         try {
-            JSONArray translationsJsonArr = translatorApi.GetTranslatedDocument(originalTextArr, targetLanguageCode);
+            JSONArray translationsJsonArr = translatorApi.GetTranslationsJsonArray(originalTextArr, targetLanguageCode);
 
             String[] translatedTextArr = ConvertTranslationsJsonArrayToStringArray(translationsJsonArr);
             String sourceLanguage = GetSourceLanguageFromTranslationJsonArray(translationsJsonArr);
