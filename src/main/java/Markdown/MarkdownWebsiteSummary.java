@@ -2,8 +2,6 @@ package Markdown;
 
 import Data.Heading;
 import Data.Website;
-import Exceptions.TranslationInvalidArgumentException;
-import Exceptions.TranslationNotSuccessfulException;
 
 import java.util.*;
 
@@ -11,8 +9,7 @@ public class MarkdownWebsiteSummary {
 
     private final static String NEW_LINE_MD = "  \n";
 
-    public static StringBuilder CreateSummaryForWebsite(Website website, String sourceLanguageName, String targetLanguageName)
-            throws TranslationInvalidArgumentException, TranslationNotSuccessfulException {
+    public static StringBuilder CreateSummaryForWebsite(Website website, String sourceLanguageName, String targetLanguageName) {
 
         StringBuilder stringBuilder = new StringBuilder();
 

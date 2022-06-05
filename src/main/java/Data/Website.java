@@ -3,7 +3,6 @@ package Data;
 import Crawlers.HeadingsCrawler;
 import Crawlers.LinksCrawler;
 import Crawlers.WebsiteCrawler;
-import Parsers.ArgumentsParser;
 import Parsers.DocumentParser;
 import org.jsoup.nodes.Document;
 
@@ -117,6 +116,7 @@ public class Website implements WebsiteCrawler {
     public List<Website> CrawlWebsites(List<String> URLs, int maxHeadingsDepth, int maxUrlDepth) {
         List<Website> websiteList = new ArrayList<>();
 
+        // TODO: A place to add multi-threading!
         for (String url : URLs) {
             Website website = new Website(documentParser, url, maxHeadingsDepth, maxUrlDepth);
             website.CrawlWebsite();

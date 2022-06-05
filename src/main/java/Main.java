@@ -60,6 +60,7 @@ public class Main {
             throws IOException, TranslationInvalidArgumentException, TranslationNotSuccessfulException {
         FileWriter summaryFileWriter = new FileWriter(DEFAULT_SUMMARY_FILE_PATH);
 
+        // TODO: A place to add multi-threading!
         for (String url : urls) {
             Website website = new Website(documentParser, url, maxHeadingDepth, MAX_URL_DEPTH);
 
