@@ -161,7 +161,7 @@ class MarkdownWebsiteSummaryTest {
     }
 
     private Website prepareSimpleWebsiteOk() {
-        Website website = new Website(null, "MY URL", 3, 0);
+        Website website = new Website("MY URL", 3, 0);
         website.setStatus(Website.WebsiteStatus.OK);
 
         List<Heading> headingsList = new ArrayList<>();
@@ -174,14 +174,14 @@ class MarkdownWebsiteSummaryTest {
     }
 
     private Website prepareOneLevelSimpleWebsiteOk() {
-        Website website = new Website(null, "MY URL", 3, 1);
+        Website website = new Website("MY URL", 3, 1);
         website.setStatus(Website.WebsiteStatus.OK);
 
         website.getHeadingsList().add(new Heading(Heading.HeadingLevel.H1, "Heading 1"));
         website.getHeadingsList().add(new Heading(Heading.HeadingLevel.H2, "Heading 2"));
         website.getHeadingsList().add(new Heading(Heading.HeadingLevel.H3, "Heading 3"));
 
-        Website websiteInner = new Website(null, "MY URL 2", 3, 0);
+        Website websiteInner = new Website("MY URL 2", 3, 0);
         websiteInner.setStatus(Website.WebsiteStatus.OK);
 
         websiteInner.getHeadingsList().add(new Heading(Heading.HeadingLevel.H1, "Heading 1"));
