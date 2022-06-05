@@ -83,14 +83,14 @@ public class TranslatorService implements Translator {
         }
     }
 
-    public static HashMap<String, String> GetLanguagesHashMap(Document languagesDocument) {
+    public static HashMap<String, String> GetLanguagesHashMap(JSONArray languagesJsonArr) {
         HashMap<String, String> languagesHashMap = new HashMap<>();
 
-        if (languagesDocument == null) {
+        if (languagesJsonArr == null) {
             return languagesHashMap;
         }
 
-        return ConvertLanguagesJsonArrayToHashMap(new JSONArray(languagesDocument.text()));
+        return ConvertLanguagesJsonArrayToHashMap(languagesJsonArr);
     }
 
     public static HashMap<String, String> ConvertLanguagesJsonArrayToHashMap(JSONArray langArrJson) {

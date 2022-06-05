@@ -14,13 +14,15 @@ public class JsoupTranslatorApi implements TranslatorApi {
     private final static String API_URL_TRANSLATE = "https://api-free.deepl.com/v2/translate";
     private final static String API_URL_LANGUAGES = "https://api-free.deepl.com/v2/languages";
 
-    public Document GetLanguagesListDocument(boolean isTarget) {
+    public JSONArray GetLanguagesListDocument(boolean isTarget) {
         try {
-            return Jsoup.connect(API_URL_LANGUAGES)
+            Document document = Jsoup.connect(API_URL_LANGUAGES)
                     .ignoreContentType(true)
                     .data("auth_key", AUTH_KEY)
                     .data("type", isTarget ? "target" : "source")
                     .get();
+
+            return new JSONArray(document.text());
         }
         catch (Exception e) {
             return null;

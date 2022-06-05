@@ -6,5 +6,5 @@ import org.jsoup.nodes.Document;
 public interface TranslatorApi {
     JSONArray GetTranslatedDocument(String[] originalTextArr, String targetLanguageCode);
 
-    Document GetLanguagesListDocument(boolean isTarget);
+    JSONArray GetLanguagesListDocument(boolean isTarget);
 }

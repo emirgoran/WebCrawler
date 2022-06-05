@@ -112,7 +112,7 @@ class TranslatorServiceTest {
     void getLanguagesHashMap() {
         Document document = new Document("");
         document.append(getLanguagesTestJsonArray().toString());
-        HashMap<String, String> languagesHashMap = TranslatorService.GetLanguagesHashMap(document);
+        HashMap<String, String> languagesHashMap = TranslatorService.GetLanguagesHashMap(getLanguagesTestJsonArray());
 
         Assertions.assertEquals(3, languagesHashMap.size());
         Assertions.assertEquals("Italian", languagesHashMap.get("IT"));
@@ -151,14 +151,11 @@ class TranslatorServiceTest {
     private TranslatorApi getTestTranslatorApi() {
         TranslatorApi translatorApi = mock(TranslatorApi.class);
 
-        Document languagesDocument = new Document("");
-        languagesDocument.append(getLanguagesTestJsonArray().toString());
-
         when(translatorApi.GetLanguagesListDocument(false))
-                .thenReturn(languagesDocument);
+                .thenReturn(getLanguagesTestJsonArray());
 
         when(translatorApi.GetLanguagesListDocument(true))
-                .thenReturn(languagesDocument);
+                .thenReturn(getLanguagesTestJsonArray());
 
         when(translatorApi.GetTranslatedDocument(any(), anyString())).thenReturn(getTranslationTestJsonArray());
 
