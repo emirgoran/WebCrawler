@@ -1,9 +1,10 @@
 package Translation;
 
+import org.json.JSONArray;
 import org.jsoup.nodes.Document;
 
 public interface TranslatorApi {
-    Document GetTranslatedDocument(String[] originalTextArr, String targetLanguageCode);
+    JSONArray GetTranslatedDocument(String[] originalTextArr, String targetLanguageCode);
 
     Document GetLanguagesListDocument(boolean isTarget);
 }

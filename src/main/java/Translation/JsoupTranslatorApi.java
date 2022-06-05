@@ -1,5 +1,7 @@
 package Translation;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -25,7 +27,7 @@ public class JsoupTranslatorApi implements TranslatorApi {
         }
     }
 
-    public Document GetTranslatedDocument(String textsArr[], String targetLanguageCode) {
+    public JSONArray GetTranslatedDocument(String[] textsArr, String targetLanguageCode) {
         Connection connectionBuilder = Jsoup.connect(API_URL_TRANSLATE)
                 .ignoreContentType(true)
                 .cookie("auth_key", AUTH_KEY)
@@ -37,10 +39,11 @@ public class JsoupTranslatorApi implements TranslatorApi {
         }
 
         try {
-            return connectionBuilder.get();
+            new JSONObject(connectionBuilder.get().text()).getJSONArray("translations");
         }
         catch (Exception e) {
             return null;
         }
+        return null;
     }
 }

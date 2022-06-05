@@ -28,9 +28,7 @@ public class TranslatorService implements Translator {
         }
 
         try {
-            Document translatedDocument = translatorApi.GetTranslatedDocument(originalTextArr, targetLanguageCode);
-
-            JSONArray translationsJsonArr = new JSONObject(translatedDocument.text()).getJSONArray("translations");
+            JSONArray translationsJsonArr = translatorApi.GetTranslatedDocument(originalTextArr, targetLanguageCode);
 
             String[] translatedTextArr = ConvertTranslationsJsonArrayToStringArray(translationsJsonArr);
             String sourceLanguage = GetSourceLanguageFromTranslationJsonArray(translationsJsonArr);

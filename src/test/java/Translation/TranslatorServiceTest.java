@@ -160,10 +160,7 @@ class TranslatorServiceTest {
         when(translatorApi.GetLanguagesListDocument(true))
                 .thenReturn(languagesDocument);
 
-        Document translationDocument = new Document("");
-        translationDocument.append("{\"translations\":[{\"detected_source_language\":\"DE\",\"text\":\"Apples\"},{\"detected_source_language\":\"DE\",\"text\":\"Strawberries\"}]}");
-
-        when(translatorApi.GetTranslatedDocument(any(), anyString())).thenReturn(translationDocument);
+        when(translatorApi.GetTranslatedDocument(any(), anyString())).thenReturn(getTranslationTestJsonArray());
 
         return translatorApi;
     }
