@@ -1,3 +1,4 @@
+import Crawlers.WebsiteCrawler;
 import Data.Website;
 import Exceptions.TranslationInvalidArgumentException;
 import Exceptions.TranslationNotSuccessfulException;
@@ -62,9 +63,9 @@ public class Main {
 
         // TODO: A place to add multi-threading!
         for (String url : urls) {
-            Website website = new Website(documentParser, url, maxHeadingDepth, MAX_URL_DEPTH);
+            Website website = new Website(url, maxHeadingDepth, MAX_URL_DEPTH);
 
-            website.CrawlWebsite();
+            WebsiteCrawler.CrawlWebsite(documentParser, website);
 
             Translation translation = TranslateWebsitesHeadingsRecursively(website, translator, targetLanguage);
 

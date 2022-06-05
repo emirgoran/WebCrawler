@@ -1,5 +1,6 @@
 package Data;
 
+import Crawlers.WebsiteCrawler;
 import Parsers.DocumentParser;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
@@ -16,8 +17,8 @@ class WebsiteTest {
         DocumentParser documentParser = mock(DocumentParser.class);
         when(documentParser.ParseUrl(anyString())).thenReturn(new Document(""));
 
-        Website website = new Website(documentParser, "URL", 6, 2);
-        website.CrawlWebsite();
+        Website website = new Website("URL", 6, 2);
+        WebsiteCrawler.CrawlWebsite(documentParser, website);
 
         assertEquals("URL", website.getURL());
         assertEquals(6, website.getMaxHeadingsDepth());
@@ -32,8 +33,8 @@ class WebsiteTest {
         DocumentParser documentParser = mock(DocumentParser.class);
         when(documentParser.ParseUrl(anyString())).thenReturn(GetSimpleDocument());
 
-        Website website = new Website(documentParser, "URL", 6, 2);
-        website.CrawlWebsite();
+        Website website = new Website("URL", 6, 2);
+        WebsiteCrawler.CrawlWebsite(documentParser, website);
 
         assertEquals("URL", website.getURL());
         assertEquals(6, website.getMaxHeadingsDepth());
@@ -47,8 +48,8 @@ class WebsiteTest {
     void crawlWebsite_crawlSimplePageAndTestInner_returnsOk() {
         DocumentParser documentParser = mock(DocumentParser.class);
         when(documentParser.ParseUrl(anyString())).thenReturn(GetSimpleDocument());
-        Website websiteOuter = new Website(documentParser, "URL", 6, 2);
-        websiteOuter.CrawlWebsite();
+        Website websiteOuter = new Website("URL", 6, 2);
+        WebsiteCrawler.CrawlWebsite(documentParser, websiteOuter);
 
         Website website = websiteOuter.getLinkedWebsitesList().get(0);
 
@@ -64,8 +65,8 @@ class WebsiteTest {
     void crawlWebsite_crawlSimplePageAndTestInnerInner_returnsNotCrawled() {
         DocumentParser documentParser = mock(DocumentParser.class);
         when(documentParser.ParseUrl(anyString())).thenReturn(GetSimpleDocument());
-        Website websiteOuter = new Website(documentParser, "URL", 6, 2);
-        websiteOuter.CrawlWebsite();
+        Website websiteOuter = new Website("URL", 6, 2);
+        WebsiteCrawler.CrawlWebsite(documentParser, websiteOuter);
 
         Website website = websiteOuter.getLinkedWebsitesList().get(0).getLinkedWebsitesList().get(0);
 
