@@ -5,7 +5,7 @@ import Exceptions.TranslationNotSuccessfulException;
 import Markdown.MarkdownWebsiteSummary;
 import Parsers.ArgumentsParser;
 import Parsers.DocumentParser;
-import Parsers.WebsiteDocumentParser;
+import Parsers.JsoupDocumentParser;
 import Translation.Translator;
 import Translation.Translation;
 import Translation.TranslatorApiImpl;
@@ -28,7 +28,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         Translator translator = new TranslatorService(new TranslatorApiImpl());
-        DocumentParser documentParser = new WebsiteDocumentParser();
+        DocumentParser documentParser = new JsoupDocumentParser();
 
         if (args.length < 3) {
             System.err.println("Invalid arguments.\nCorrect format <HEADINGS_DEPTH> <TARGET_LANGUAGE_CODE> <URL ...>" +

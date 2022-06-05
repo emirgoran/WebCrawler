@@ -3,7 +3,7 @@ package Parsers;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-public class WebsiteDocumentParser implements DocumentParser {
+public class JsoupDocumentParser implements DocumentParser {
 
     /* Not unit testable. Requires the URL to be valid and accessible! */
     public Document ParseUrl(String URL)
