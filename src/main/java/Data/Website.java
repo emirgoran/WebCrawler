@@ -1,5 +1,7 @@
 package Data;
 
+import Translation.Translation;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +19,16 @@ public class Website {
     private int maxHeadingsDepth;
     private int maxUrlDepth;
 
+    public Translation getLinkedTranslation() {
+        return linkedTranslation;
+    }
+
+    public void setLinkedTranslation(Translation linkedTranslation) {
+        this.linkedTranslation = linkedTranslation;
+    }
+
+    private Translation linkedTranslation;
+
 
     public Website(String URL, int maxHeadingsDepth, int maxUrlDepth) {
         this.URL = URL;
@@ -26,6 +38,14 @@ public class Website {
         this.status = WebsiteStatus.BROKEN;
         this.maxHeadingsDepth = maxHeadingsDepth;
         this.maxUrlDepth = maxUrlDepth;
+    }
+
+    public Website(String URL, WebsiteStatus initialStatus, int maxHeadingsDepth) {
+        this.URL = URL;
+        this.status = initialStatus;
+        this.maxHeadingsDepth = maxHeadingsDepth;
+        this.headingsList = new ArrayList<>();
+        this.linkedWebsitesList = new ArrayList<>();
     }
 
     public String getURL() {
@@ -42,6 +62,10 @@ public class Website {
 
     public List<Website> getLinkedWebsitesList() {
         return linkedWebsitesList;
+    }
+
+    public void setMaxUrlDepth(int maxUrlDepth) {
+        this.maxUrlDepth = maxUrlDepth;
     }
 
     public int getMaxUrlDepth() {

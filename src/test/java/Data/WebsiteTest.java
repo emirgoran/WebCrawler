@@ -5,6 +5,8 @@ import Parsers.DocumentParser;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -13,7 +15,7 @@ import static org.mockito.Mockito.when;
 class WebsiteTest {
 
     @Test
-    void crawlWebsite_crawlEmptyPage_returnsEmpty() {
+    void crawlWebsite_crawlEmptyPage_returnsEmpty() throws IOException {
         DocumentParser documentParser = mock(DocumentParser.class);
         when(documentParser.ParseUrl(anyString())).thenReturn(new Document(""));
 
@@ -29,7 +31,7 @@ class WebsiteTest {
     }
 
     @Test
-    void crawlWebsite_crawlSimplePage_returnsOk() {
+    void crawlWebsite_crawlSimplePage_returnsOk() throws IOException {
         DocumentParser documentParser = mock(DocumentParser.class);
         when(documentParser.ParseUrl(anyString())).thenReturn(GetSimpleDocument());
 
@@ -45,7 +47,7 @@ class WebsiteTest {
     }
 
     @Test
-    void crawlWebsite_crawlSimplePageAndTestInner_returnsOk() {
+    void crawlWebsite_crawlSimplePageAndTestInner_returnsOk() throws IOException {
         DocumentParser documentParser = mock(DocumentParser.class);
         when(documentParser.ParseUrl(anyString())).thenReturn(GetSimpleDocument());
         Website websiteOuter = new Website("URL", 6, 2);
@@ -62,7 +64,7 @@ class WebsiteTest {
     }
 
     @Test
-    void crawlWebsite_crawlSimplePageAndTestInnerInner_returnsNotCrawled() {
+    void crawlWebsite_crawlSimplePageAndTestInnerInner_returnsNotCrawled() throws IOException {
         DocumentParser documentParser = mock(DocumentParser.class);
         when(documentParser.ParseUrl(anyString())).thenReturn(GetSimpleDocument());
         Website websiteOuter = new Website("URL", 6, 2);

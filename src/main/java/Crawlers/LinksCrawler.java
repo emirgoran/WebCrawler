@@ -9,9 +9,9 @@ import java.util.List;
 
 public class LinksCrawler {
 
-    public static final int MAX_LINKED_WEBSITES = 1;
+    public static final int MAX_LINKED_WEBSITES = 3;
 
-    public static List<String> GetUrlsFromWebsite(Document document) {
+    public static List<String> GetUrlsFromDocument(Document document) {
         List<String> urls = new ArrayList<>();
         int pagesCount = 0;
 

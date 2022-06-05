@@ -3,6 +3,8 @@ package Parsers;
 import Translation.Translator;
 import org.jsoup.nodes.Document;
 
+import java.io.IOException;
+
 public class ArgumentsParser {
 
     public static boolean IsSupportedLanguageCode(Translator translator, String language)
@@ -45,7 +47,13 @@ public class ArgumentsParser {
     }
 
     public static boolean ValidateUrl(DocumentParser documentParser, String URL) {
-        Document parsedDocument = documentParser.ParseUrl(URL);
+        Document parsedDocument = null;
+        try {
+            parsedDocument = documentParser.ParseUrl(URL);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         if (parsedDocument == null) {
             return false;
         }

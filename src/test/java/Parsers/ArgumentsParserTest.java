@@ -4,6 +4,8 @@ import Translation.Translator;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -85,7 +87,7 @@ class ArgumentsParserTest {
     }
 
     @Test
-    void validateUrl_documentPresent_returnsTrue() {
+    void validateUrl_documentPresent_returnsTrue() throws IOException {
         DocumentParser documentParser = mock(DocumentParser.class);
         when(documentParser.ParseUrl(any())).thenReturn(new Document(""));
         boolean result = ArgumentsParser.ValidateUrl(documentParser, "URL");
@@ -94,7 +96,7 @@ class ArgumentsParserTest {
     }
 
     @Test
-    void validateUrl_documentNull_returnsFalse() {
+    void validateUrl_documentNull_returnsFalse() throws IOException {
         DocumentParser documentParser = mock(DocumentParser.class);
         when(documentParser.ParseUrl(any())).thenReturn(null);
         boolean result = ArgumentsParser.ValidateUrl(documentParser, "URL");

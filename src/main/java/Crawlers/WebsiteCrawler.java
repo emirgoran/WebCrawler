@@ -5,6 +5,7 @@ import Data.Website;
 import Parsers.DocumentParser;
 import org.jsoup.nodes.Document;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,13 @@ public class WebsiteCrawler {
     public static final int MAX_INNER_WEBSITES_NUM = 5;
 
     public static void CrawlWebsite(DocumentParser documentParser, Website website) {
-        Document webDocument = documentParser.ParseUrl(website.getURL());
+        Document webDocument = null;
+
+        try {
+            webDocument = documentParser.ParseUrl(website.getURL());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         if (webDocument == null) {
             website.setStatus(Website.WebsiteStatus.BROKEN);
@@ -25,21 +32,22 @@ public class WebsiteCrawler {
             return;
         }
 
-        CrawlHeadings(webDocument, website);
+        website.setHeadingsList(GetHeadingsFromDocument(webDocument, website.getMaxHeadingsDepth()));
+
         CrawlLinkedWebsites(documentParser, webDocument, website);
         website.setStatus(Website.WebsiteStatus.OK);
     }
 
     /* Get headings from the web document. */
-    private static void CrawlHeadings(Document document, Website website) {
-        Heading.HeadingLevel headingLevel = HeadingsCrawler.GetHeadingLevelFromInt(website.getMaxHeadingsDepth());
-        website.setHeadingsList(HeadingsCrawler.GetHeadingsFromDocument(document, headingLevel));
+    private static List<Heading> GetHeadingsFromDocument(Document document, int maxHeadingsDepth) {
+        Heading.HeadingLevel headingLevel = HeadingsCrawler.GetHeadingLevelFromInt(maxHeadingsDepth);
+        return HeadingsCrawler.GetHeadingsFromDocument(document, headingLevel);
     }
 
     /* Find URLs on a webpage, then recursively crawl those URLs until the maxUrlDepth is reached. */
     /* Also limit the number of linked websites due to the number of websites getting out of control. */
     private static void CrawlLinkedWebsites(DocumentParser documentParser, Document document, Website website) {
-        List<String> linkedUrls = LinksCrawler.GetUrlsFromWebsite(document);
+        List<String> linkedUrls = LinksCrawler.GetUrlsFromDocument(document);
 
         List<Website> linkedWebsites = CrawlWebsites(documentParser, linkedUrls, website.getMaxHeadingsDepth(), website.getMaxUrlDepth() - 1);
 
@@ -62,5 +70,23 @@ public class WebsiteCrawler {
         }
 
         return websiteList;
+    }
+
+    public static Website CrawlWebsiteHeadingsAndLinkedPages(DocumentParser documentParser, Website website, int maxHeadingsDepth) throws IOException {
+        Document webDocument = documentParser.ParseUrl(website.getURL());
+
+        website.setStatus(Website.WebsiteStatus.OK);
+
+        if (webDocument == null) {
+            website.setStatus(Website.WebsiteStatus.BROKEN);
+        }
+
+        website.setHeadingsList(GetHeadingsFromDocument(webDocument, maxHeadingsDepth));
+
+        for (String innerUrl : LinksCrawler.GetUrlsFromDocument(webDocument)) {
+            website.getLinkedWebsitesList().add(new Website(innerUrl, Website.WebsiteStatus.NOT_CRAWLED, maxHeadingsDepth));
+        }
+
+        return website;
     }
 }
