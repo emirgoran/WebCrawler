@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static Crawlers.WebsiteCrawler.CrawlWebsiteHeadingsAndLinkedPages;
 
@@ -79,20 +81,25 @@ public class Main {
     public static void CrawlAndTranslateWebsitesRecursively(List<Website> websitesList, DocumentParser documentParser, Translator translator, String targetLanguageCode, int maxHeadingsDepth, int untilDepth)
             throws TranslationInvalidArgumentException, TranslationNotSuccessfulException, IOException {
 
+        // Attention: Recursion stop condition!
         if (untilDepth-- <= 0) {
             return;
         }
 
-        // TODO: Must parallelize this one !
+        ExecutorService executor = Executors.newFixedThreadPool(websitesList.size());
+
         for (Website website : websitesList) {
-            CrawlWebsiteHeadingsAndLinkedPages(documentParser, website, maxHeadingsDepth); // TODO: parallelize!
+            // Crawl website headings and linked pages, then immediately start crawling linked pages in a multithreaded manner.
+            CrawlWebsiteHeadingsAndLinkedPages(documentParser, website, maxHeadingsDepth);
+
+            // Attention: Recursive call is here (multithreaded, non-blocking)!
+            CrawlAndTranslateWebsitesRecursively(website.getLinkedWebsitesList(), documentParser, translator, targetLanguageCode, maxHeadingsDepth, untilDepth);
+
+            // After starting the recursive, multithreaded call we can start translation as it is independent of the recursive crawling.
             TranslateWebsiteHeadings(website, translator, targetLanguageCode);
 
-            // Let the website know its depth relative to the root parent (optional, future proofing).
+            // Let the website know its (inverse) depth relative to the root parent (optional, future proofing).
             website.setMaxUrlDepth(untilDepth + 1);
-
-            // Recursive call here !
-            CrawlAndTranslateWebsitesRecursively(website.getLinkedWebsitesList(), documentParser, translator, targetLanguageCode, maxHeadingsDepth, untilDepth);
         }
     }
 
