@@ -119,47 +119,6 @@ class MarkdownWebsiteSummaryTest {
         assertTrue(isOk);
     }
 
-    @Test
-    void collectHeadingsFromWebsitesRecursive_noRecursion_returnsOk() {
-        List<String> headingsList = MarkdownWebsiteSummary.CollectHeadingsFromWebsitesRecursive(prepareSimpleWebsiteOk());
-
-        assertEquals(3, headingsList.size());
-        for (int i = 0; i < 2; i++) {
-            Assertions.assertEquals("Heading " + (i+1), headingsList.get(i));
-        }
-    }
-
-    @Test
-    void collectHeadingsFromWebsitesRecursive_oneRecursion_returnsOk() {
-        List<String> headingsList = MarkdownWebsiteSummary.CollectHeadingsFromWebsitesRecursive(prepareOneLevelSimpleWebsiteOk());
-
-        assertEquals(6, headingsList.size());
-        for (int i = 0; i < 3; i++) {
-            Assertions.assertEquals("Heading " + (i+1), headingsList.get(i));
-        }
-        for (int i = 3; i < 6; i++) {
-            Assertions.assertEquals("Heading " + (i-2), headingsList.get(i));
-        }
-    }
-
-    @Test
-    void applyHeadingsToWebsitesRecursive() {
-        Website website = prepareOneLevelSimpleWebsiteOk();
-        Queue<String> headingsQueue = new LinkedList<>();
-        for (int i = 0; i < 6; i++) {
-            headingsQueue.add("HEADING " + (i+1));
-        }
-
-        MarkdownWebsiteSummary.ApplyHeadingsToWebsitesRecursive(website, headingsQueue);
-
-        assertEquals(3, website.getHeadingsList().size());
-        assertEquals(3, website.getLinkedWebsitesList().get(0).getHeadingsList().size());
-        for (int i = 0; i < 3; i++) {
-            assertEquals("HEADING " + (i+1), website.getHeadingsList().get(i).getText());
-            assertEquals("HEADING " + (i+4), website.getLinkedWebsitesList().get(0).getHeadingsList().get(i).getText());
-        }
-    }
-
     private Website prepareSimpleWebsiteOk() {
         Website website = new Website("MY URL", 3, 0);
         website.setStatus(Website.WebsiteStatus.OK);

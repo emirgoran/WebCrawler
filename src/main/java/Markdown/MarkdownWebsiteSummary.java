@@ -74,36 +74,4 @@ public class MarkdownWebsiteSummary {
 
         return true;
     }
-
-    public static List<String> CollectHeadingsFromWebsitesRecursive(Website website) {
-        if (website == null || website.getHeadingsList() == null) {
-            return new ArrayList<>();
-        }
-
-        List<String> headingsStringList = new LinkedList<>();
-
-        for (Heading heading : website.getHeadingsList()) {
-            headingsStringList.add(heading.getText());
-        }
-
-        for (Website websiteInner : website.getLinkedWebsitesList()) {
-            headingsStringList.addAll(CollectHeadingsFromWebsitesRecursive(websiteInner));
-        }
-
-        return headingsStringList;
-    }
-
-    public static void ApplyHeadingsToWebsitesRecursive(Website website, Queue<String> headingsQueue) {
-        if (website == null || website.getHeadingsList() == null || headingsQueue == null) {
-            return;
-        }
-
-        for (Heading heading : website.getHeadingsList()) {
-            heading.setText(headingsQueue.poll());
-        }
-
-        for (Website websiteInner : website.getLinkedWebsitesList()) {
-            ApplyHeadingsToWebsitesRecursive(websiteInner, headingsQueue);
-        }
-    }
 }

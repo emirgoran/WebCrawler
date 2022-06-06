@@ -21,16 +21,15 @@ class TranslatorServiceTest {
     void translateText() throws TranslationInvalidArgumentException, TranslationNotSuccessfulException {
         TranslatorService translatorService = new TranslatorService(getTestTranslatorApi());
 
-        String[] originalText = new String[] {"Äpfel", "Erdbeeren"};
-        String[] expectedTranslationText = new String[] {"Apples", "Strawberries"};
+        String[] originalText = new String[] {"Translation"};
+        String[] expectedTranslationText = new String[] {"Translation"};
 
         Translation translation = translatorService.TranslateText(originalText, "EN");
 
-        Assertions.assertEquals("German", translation.getSourceLanguage());
+        Assertions.assertEquals("English", translation.getSourceLanguage());
         Assertions.assertEquals("English", translation.getTargetLanguage());
-        Assertions.assertEquals(2, translation.getTranslatedText().length);
+        Assertions.assertEquals(1, translation.getTranslatedText().length);
         Assertions.assertEquals(expectedTranslationText[0], translation.getTranslatedText()[0]);
-        Assertions.assertEquals(expectedTranslationText[1], translation.getTranslatedText()[1]);
     }
 
     @Test

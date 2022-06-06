@@ -29,7 +29,6 @@ public class Website {
 
     private Translation linkedTranslation;
 
-
     public Website(String URL, int maxHeadingsDepth, int maxUrlDepth) {
         this.URL = URL;
         this.headingsList = new ArrayList<>();
