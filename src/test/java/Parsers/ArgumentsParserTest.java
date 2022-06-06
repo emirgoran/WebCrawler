@@ -1,5 +1,7 @@
 package Parsers;
 
+import Data.JsoupWebDocument;
+import Data.WebDocument;
 import Translation.Translator;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
@@ -89,7 +91,7 @@ class ArgumentsParserTest {
     @Test
     void validateUrl_documentPresent_returnsTrue() throws IOException {
         DocumentParser documentParser = mock(DocumentParser.class);
-        when(documentParser.ParseUrl(any())).thenReturn(new Document(""));
+        when(documentParser.ParseUrl(any())).thenReturn(new JsoupWebDocument(new Document("")));
         boolean result = ArgumentsParser.ValidateUrl(documentParser, "URL");
 
         assertTrue(result);

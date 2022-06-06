@@ -1,9 +1,8 @@
 package Crawlers;
 
 import Data.Heading;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import Data.WebDocument;
+import Data.WebElement;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,13 +11,13 @@ import java.util.Set;
 
 public class HeadingsCrawler {
 
-    public static List<Heading> GetHeadingsFromDocument(Document document, Heading.HeadingLevel depth) {
+    public static List<Heading> GetHeadingsFromDocument(WebDocument document, Heading.HeadingLevel depth) {
         List<Heading> headingList = new ArrayList<>();
 
-        Elements hTags = document.select(GetCssHeadingsQuery(depth));
+        List<WebElement> hTags = document.selectElementsFromDocument(GetCssHeadingsQuery(depth));
 
-        for (Element element : hTags) {
-            headingList.add(new Heading(GetHeadingLevelFromTag(element.tagName()), element.ownText()));
+        for (WebElement element : hTags) {
+            headingList.add(new Heading(GetHeadingLevelFromTag(element.getTag()), element.getText()));
         }
 
         return headingList;

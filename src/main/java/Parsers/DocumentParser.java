@@ -1,9 +1,9 @@
 package Parsers;
 
-import org.jsoup.nodes.Document;
+import Data.WebDocument;
 
 import java.io.IOException;
 
 public interface DocumentParser {
-    Document ParseUrl(String URL) throws IOException;
+    WebDocument ParseUrl(String URL) throws IOException;
 }

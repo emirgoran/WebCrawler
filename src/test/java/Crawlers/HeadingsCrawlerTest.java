@@ -1,6 +1,8 @@
 package Crawlers;
 
 import Data.Heading;
+import Data.JsoupWebDocument;
+import Data.WebDocument;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -11,7 +13,7 @@ class HeadingsCrawlerTest {
 
     @Test
     void getHeadingsFromDocument_testNoHeadingLevels_returnsOk() {
-        Document document = new Document("localhost");
+        WebDocument document = new JsoupWebDocument(new Document("localhost"));
 
         List<Heading> headingsList = HeadingsCrawler.GetHeadingsFromDocument(document, Heading.HeadingLevel.H6);
 
@@ -20,7 +22,7 @@ class HeadingsCrawlerTest {
 
     @Test
     void getHeadingsFromDocument_testAllHeadingLevels_returnsOk() {
-        Document document = new Document("localhost");
+        WebDocument document = new JsoupWebDocument(new Document("localhost"));
         document.append("<h0> Heading 0 </h0>"); // invalid one
         document.append("<h1> Heading 1 </h1>");
         document.append("<h2> Heading 2 </h2>");

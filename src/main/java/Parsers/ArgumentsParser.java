@@ -1,7 +1,7 @@
 package Parsers;
 
+import Data.WebDocument;
 import Translation.Translator;
-import org.jsoup.nodes.Document;
 
 public class ArgumentsParser {
 
@@ -45,7 +45,7 @@ public class ArgumentsParser {
     }
 
     public static boolean ValidateUrl(DocumentParser documentParser, String URL) {
-        Document parsedDocument = null;
+        WebDocument parsedDocument = null;
         try {
             parsedDocument = documentParser.ParseUrl(URL);
         } catch (Exception e) {
