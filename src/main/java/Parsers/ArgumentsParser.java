@@ -50,8 +50,8 @@ public class ArgumentsParser {
         Document parsedDocument = null;
         try {
             parsedDocument = documentParser.ParseUrl(URL);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            return false;
         }
 
         if (parsedDocument == null) {
