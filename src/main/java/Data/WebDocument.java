@@ -3,7 +3,7 @@ package Data;
 import java.util.List;
 
 public interface WebDocument {
-    List<WebElement> selectElementsFromDocument(String cssQuery);
+    List<WebElement> selectElementsFromWebDocument(String cssQuery);
 
     List<String> getAbsoluteUrlsFromDocument();
 

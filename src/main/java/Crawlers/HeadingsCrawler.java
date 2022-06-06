@@ -11,13 +11,13 @@ import java.util.Set;
 
 public class HeadingsCrawler {
 
-    public static List<Heading> GetHeadingsFromDocument(WebDocument document, Heading.HeadingLevel depth) {
+    public static List<Heading> GetHeadingsFromWebDocument(WebDocument webDocument, Heading.HeadingLevel depth) {
         List<Heading> headingList = new ArrayList<>();
 
-        List<WebElement> hTags = document.selectElementsFromDocument(GetCssHeadingsQuery(depth));
+        List<WebElement> hTags = webDocument.selectElementsFromWebDocument(GetCssHeadingsQuery(depth));
 
-        for (WebElement element : hTags) {
-            headingList.add(new Heading(GetHeadingLevelFromTag(element.getTag()), element.getText()));
+        for (WebElement webElement : hTags) {
+            headingList.add(new Heading(GetHeadingLevelFromTag(webElement.getTag()), webElement.getText()));
         }
 
         return headingList;

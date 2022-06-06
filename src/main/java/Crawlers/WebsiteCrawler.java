@@ -13,7 +13,7 @@ public class WebsiteCrawler {
     /* Get headings from the web document. */
     private static List<Heading> GetHeadingsFromDocument(WebDocument document, int maxHeadingsDepth) {
         Heading.HeadingLevel headingLevel = HeadingsCrawler.GetHeadingLevelFromInt(maxHeadingsDepth);
-        return HeadingsCrawler.GetHeadingsFromDocument(document, headingLevel);
+        return HeadingsCrawler.GetHeadingsFromWebDocument(document, headingLevel);
     }
 
     public static Website CrawlWebsiteHeadingsAndLinkedPages(DocumentParser documentParser, Website website, int maxHeadingsDepth) throws IOException {

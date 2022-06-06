@@ -15,7 +15,7 @@ class HeadingsCrawlerTest {
     void getHeadingsFromDocument_testNoHeadingLevels_returnsOk() {
         WebDocument document = new JsoupWebDocument(new Document("localhost"));
 
-        List<Heading> headingsList = HeadingsCrawler.GetHeadingsFromDocument(document, Heading.HeadingLevel.H6);
+        List<Heading> headingsList = HeadingsCrawler.GetHeadingsFromWebDocument(document, Heading.HeadingLevel.H6);
 
         Assertions.assertEquals(0, headingsList.size());
     }
@@ -32,7 +32,7 @@ class HeadingsCrawlerTest {
         document.append("<h6> Heading 6 </h6>");
         document.append("<h7> Heading 7 </h7>"); // invalid one
 
-        List<Heading> headingsList = HeadingsCrawler.GetHeadingsFromDocument(document, Heading.HeadingLevel.H6);
+        List<Heading> headingsList = HeadingsCrawler.GetHeadingsFromWebDocument(document, Heading.HeadingLevel.H6);
 
         Assertions.assertEquals(6, headingsList.size());
         for (int i = 0; i < 6; i++) {

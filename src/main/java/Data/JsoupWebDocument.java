@@ -16,7 +16,7 @@ public class JsoupWebDocument implements WebDocument {
     }
 
     @Override
-    public List<WebElement> selectElementsFromDocument(String cssQuery) {
+    public List<WebElement> selectElementsFromWebDocument(String cssQuery) {
         Elements elements = document.select(cssQuery);
         ArrayList<WebElement> webElements = new ArrayList<>(elements.size());
 
