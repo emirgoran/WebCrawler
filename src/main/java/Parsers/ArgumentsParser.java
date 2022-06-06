@@ -3,8 +3,6 @@ package Parsers;
 import Translation.Translator;
 import org.jsoup.nodes.Document;
 
-import java.io.IOException;
-
 public class ArgumentsParser {
 
     public static boolean IsSupportedLanguageCode(Translator translator, String language)
