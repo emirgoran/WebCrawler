@@ -86,7 +86,6 @@ public class Main {
             } finally {
                 executorService.shutdownNow();
             }
-
         }
 
         summaryFileWriter.close();
