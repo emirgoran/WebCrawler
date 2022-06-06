@@ -27,7 +27,7 @@ public class WebsiteCrawler {
 
         website.setHeadingsList(GetHeadingsFromDocument(webDocument, maxHeadingsDepth));
 
-        for (String innerUrl : LinksCrawler.GetUrlsFromDocument(webDocument)) {
+        for (String innerUrl : LinksCrawler.GetUrlsFromWebDocument(webDocument)) {
             website.getLinkedWebsitesList().add(new Website(innerUrl, Website.WebsiteStatus.NOT_CRAWLED, maxHeadingsDepth));
         }
 

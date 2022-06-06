@@ -28,7 +28,7 @@ public class JsoupWebDocument implements WebDocument {
     }
 
     @Override
-    public List<String> getAbsoluteUrlsFromDocument() {
+    public List<String> getAbsoluteUrlsFromWebDocument() {
         ArrayList<String> urls = new ArrayList<>();
 
         Elements links = document.select("a[href]");

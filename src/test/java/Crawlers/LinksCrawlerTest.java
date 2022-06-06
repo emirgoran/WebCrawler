@@ -14,7 +14,7 @@ class LinksCrawlerTest {
     void getUrlsFromWebsite_noUrlsOnWebsite_returnsEmpty() {
         WebDocument document = new JsoupWebDocument(new Document("localhost"));
 
-        List<String> urls = LinksCrawler.GetUrlsFromDocument(document);
+        List<String> urls = LinksCrawler.GetUrlsFromWebDocument(document);
 
         Assertions.assertEquals(0, urls.size());
     }
@@ -24,7 +24,7 @@ class LinksCrawlerTest {
         WebDocument document = new JsoupWebDocument(new Document("localhost"));
         document.append("<a href=\"http:\\\\www.test-website.com\"> Test website </a>");
 
-        List<String> urls = LinksCrawler.GetUrlsFromDocument(document);
+        List<String> urls = LinksCrawler.GetUrlsFromWebDocument(document);
 
         Assertions.assertEquals(1, urls.size());
         Assertions.assertEquals("http:\\\\www.test-website.com", urls.get(0));
@@ -37,7 +37,7 @@ class LinksCrawlerTest {
             document.append("<a href=\"http:\\\\www.test-website.com\"> Test website </a>");
         }
 
-        List<String> urls = LinksCrawler.GetUrlsFromDocument(document);
+        List<String> urls = LinksCrawler.GetUrlsFromWebDocument(document);
 
         Assertions.assertEquals(LinksCrawler.MAX_LINKED_WEBSITES, urls.size());
         for (int i = 0; i < LinksCrawler.MAX_LINKED_WEBSITES; i++) {
@@ -52,7 +52,7 @@ class LinksCrawlerTest {
             document.append("<a href=\"http:\\\\www.test-website.com\"> Test website </a>");
         }
 
-        List<String> urls = LinksCrawler.GetUrlsFromDocument(document);
+        List<String> urls = LinksCrawler.GetUrlsFromWebDocument(document);
 
         Assertions.assertEquals(LinksCrawler.MAX_LINKED_WEBSITES, urls.size());
         for (int i = 0; i < LinksCrawler.MAX_LINKED_WEBSITES; i++) {

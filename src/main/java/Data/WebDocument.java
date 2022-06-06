@@ -5,7 +5,7 @@ import java.util.List;
 public interface WebDocument {
     List<WebElement> selectElementsFromWebDocument(String cssQuery);
 
-    List<String> getAbsoluteUrlsFromDocument();
+    List<String> getAbsoluteUrlsFromWebDocument();
 
     void append(String s);
 }
