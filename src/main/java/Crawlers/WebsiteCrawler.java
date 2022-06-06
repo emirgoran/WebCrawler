@@ -11,9 +11,9 @@ import java.util.List;
 public class WebsiteCrawler {
 
     /* Get headings from the web document. */
-    private static List<Heading> GetHeadingsFromDocument(WebDocument document, int maxHeadingsDepth) {
+    private static List<Heading> GetHeadingsFromWebDocument(WebDocument webDocument, int maxHeadingsDepth) {
         Heading.HeadingLevel headingLevel = HeadingsCrawler.GetHeadingLevelFromInt(maxHeadingsDepth);
-        return HeadingsCrawler.GetHeadingsFromWebDocument(document, headingLevel);
+        return HeadingsCrawler.GetHeadingsFromWebDocument(webDocument, headingLevel);
     }
 
     public static Website CrawlWebsiteHeadingsAndLinkedPages(DocumentParser documentParser, Website website, int maxHeadingsDepth) throws IOException {
@@ -25,7 +25,7 @@ public class WebsiteCrawler {
             website.setStatus(Website.WebsiteStatus.BROKEN);
         }
 
-        website.setHeadingsList(GetHeadingsFromDocument(webDocument, maxHeadingsDepth));
+        website.setHeadingsList(GetHeadingsFromWebDocument(webDocument, maxHeadingsDepth));
 
         for (String innerUrl : LinksCrawler.GetUrlsFromWebDocument(webDocument)) {
             website.getLinkedWebsitesList().add(new Website(innerUrl, Website.WebsiteStatus.NOT_CRAWLED, maxHeadingsDepth));
