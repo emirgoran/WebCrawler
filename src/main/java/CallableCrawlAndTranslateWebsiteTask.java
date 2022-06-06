@@ -6,6 +6,7 @@ import Parsers.DocumentParser;
 import Translation.Translation;
 import Translation.Translator;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -30,7 +31,7 @@ public class CallableCrawlAndTranslateWebsiteTask implements Callable<Website> {
     }
 
     @Override
-    public Website call() throws Exception {
+    public Website call() throws IOException, InterruptedException, ExecutionException {
         // Crawl website headings and linked pages.
         CrawlWebsiteHeadingsAndLinkedPages(documentParser, website, maxHeadingsDepth);
 
