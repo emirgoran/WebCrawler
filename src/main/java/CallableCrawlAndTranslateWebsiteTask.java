@@ -40,16 +40,16 @@ public class CallableCrawlAndTranslateWebsiteTask implements Callable<Website> {
 
         // ExecutorService for two tasks we need to parallelize: Crawling, Translating.
         ExecutorService executorService = Executors.newFixedThreadPool(2);
-        ArrayList<Callable<Void>> tasks = new ArrayList<>(2);
-        tasks.add(GetCrawlAndTranslateWebsitesRecursivelyCallableTask(website.getLinkedWebsitesList(), documentParser, translator, targetLanguageCode, maxHeadingsDepth, untilDepth));
+        ArrayList<Callable<Website>> tasks = new ArrayList<>(2);
+        tasks.add(GetCrawlAndTranslateWebsitesRecursivelyCallableTask(website, documentParser, translator, targetLanguageCode, maxHeadingsDepth, untilDepth));
         tasks.add(GetTranslateWebsiteHeadingsCallableTask(website, translator, targetLanguageCode));
 
-        List<Future<Void>> websitesFutureList = executorService.invokeAll(tasks);
+        List<Future<Website>> websitesFutureList = executorService.invokeAll(tasks);
 
         // Join all tasks' threads and throw (propagate) ExecutionException if the underlying task threw an exception.
         // The underlying exception/cause will be available through Throwable.getCause() method.
         try {
-            for (Future<Void> websiteFuture : websitesFutureList) {
+            for (Future<Website> websiteFuture : websitesFutureList) {
                 websiteFuture.get();
             }
         } catch (Exception e) {
@@ -64,7 +64,7 @@ public class CallableCrawlAndTranslateWebsiteTask implements Callable<Website> {
     }
 
     // Even though it uses multithreading internally, this function is a blocking one.
-    public static void CrawlAndTranslateWebsitesRecursively(List<Website> websitesList, DocumentParser documentParser, Translator translator, String targetLanguageCode, int maxHeadingsDepth, int untilDepthNew)
+    public static void CrawlAndTranslateLinkedWebsitesRecursively(Website website, DocumentParser documentParser, Translator translator, String targetLanguageCode, int maxHeadingsDepth, int untilDepthNew)
             throws InterruptedException, ExecutionException {
 
         // Attention: Recursion stop condition!
@@ -72,12 +72,12 @@ public class CallableCrawlAndTranslateWebsiteTask implements Callable<Website> {
             return;
         }
 
-        ExecutorService executorService = Executors.newFixedThreadPool(websitesList.size());
-        ArrayList<Callable<Website>> tasks = new ArrayList<>(websitesList.size());
+        ExecutorService executorService = Executors.newFixedThreadPool(website.getLinkedWebsitesList().size());
+        ArrayList<Callable<Website>> tasks = new ArrayList<>(website.getLinkedWebsitesList().size());
 
         // TODO: Don't forget to catch exceptions and route them back to the caller somehow!
-        for (Website website : websitesList) {
-            tasks.add(new CallableCrawlAndTranslateWebsiteTask(website, documentParser, translator, targetLanguageCode, maxHeadingsDepth, untilDepthNew - 1));
+        for (Website innerWebsite : website.getLinkedWebsitesList()) {
+            tasks.add(new CallableCrawlAndTranslateWebsiteTask(innerWebsite, documentParser, translator, targetLanguageCode, maxHeadingsDepth, untilDepthNew - 1));
         }
 
         List<Future<Website>> websitesFutureList = executorService.invokeAll(tasks);
@@ -114,17 +114,17 @@ public class CallableCrawlAndTranslateWebsiteTask implements Callable<Website> {
         website.setLinkedTranslation(translation);
     }
 
-    private static Callable<Void> GetCrawlAndTranslateWebsitesRecursivelyCallableTask(List<Website> websitesList, DocumentParser documentParser, Translator translator, String targetLanguageCode, int maxHeadingsDepth, int untilDepthNew) {
+    private static Callable<Website> GetCrawlAndTranslateWebsitesRecursivelyCallableTask(Website website, DocumentParser documentParser, Translator translator, String targetLanguageCode, int maxHeadingsDepth, int untilDepthNew) {
         return () -> {
-            CrawlAndTranslateWebsitesRecursively(websitesList, documentParser, translator, targetLanguageCode, maxHeadingsDepth, untilDepthNew);
-            return null;
+            CrawlAndTranslateLinkedWebsitesRecursively(website, documentParser, translator, targetLanguageCode, maxHeadingsDepth, untilDepthNew);
+            return website;
         };
     }
 
-    private static Callable<Void> GetTranslateWebsiteHeadingsCallableTask(Website website, Translator translator, String targetLanguageCode) {
+    private static Callable<Website> GetTranslateWebsiteHeadingsCallableTask(Website website, Translator translator, String targetLanguageCode) {
         return () -> {
             TranslateWebsiteHeadings(website, translator, targetLanguageCode);
-            return null;
+            return website;
         };
     }
 }

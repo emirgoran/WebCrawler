@@ -56,24 +56,27 @@ public class Main {
             throws IOException, InterruptedException {
         FileWriter summaryFileWriter = new FileWriter(DEFAULT_SUMMARY_FILE_PATH);
         ExecutorService executorService = Executors.newFixedThreadPool(urls.length);
+        ArrayList<Website> websiteArrayList = new ArrayList<>(urls.length);
         ArrayList<Callable<Website>> tasks = new ArrayList<>(urls.length);
 
         // Initialize empty websites and create crawling and translating tasks for them.
         for (int i = 0; i < urls.length; i++) {
             Website website = new Website(urls[i], Website.WebsiteStatus.NOT_CRAWLED, maxHeadingsDepth);
+            websiteArrayList.add(website);
             tasks.add(new CallableCrawlAndTranslateWebsiteTask(website, documentParser, translator, targetLanguageCode, maxHeadingsDepth, MAX_URL_DEPTH));
         }
 
-        // Invoke all website crawling&translating tasks.
+        // Invoke all website crawling and translating tasks.
         List<Future<Website>> websitesFutureList = executorService.invokeAll(tasks);
 
         // Acts like the join() method from Thread (initial order is preserved).
         for (Future<Website> websiteFuture : websitesFutureList) {
-            Website website = null;
+            Website website = websiteArrayList.get(websitesFutureList.indexOf(websiteFuture));
+
             try {
                 // This call will block until the underlying task is finished.
                 // It will throw an ExecutionException if the underlying task threw any exception.
-                website = websiteFuture.get();
+                websiteFuture.get();
 
                 // Create a summary and send it to the writer.
                 StringBuilder markdownStringBuilder = MarkdownWebsiteSummary.CreateSummaryForWebsite(website, website.getLinkedTranslation().getSourceLanguage(), website.getLinkedTranslation().getTargetLanguage());
@@ -109,6 +112,6 @@ public class Main {
             System.err.println("Unexpected exception has been thrown while trying to fetch and/or translate website.");
         }
 
-        System.err.println("Affected website: " + crawledWebsite.getURL());
+        System.err.println("Affected website: " + crawledWebsite.getURL() + "\n");
     }
 }
