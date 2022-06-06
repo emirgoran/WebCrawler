@@ -48,11 +48,18 @@ public class CallableCrawlAndTranslateWebsiteTask implements Callable<Website> {
 
         // Join all tasks' threads and throw (propagate) ExecutionException if the underlying task threw an exception.
         // The underlying exception/cause will be available through Throwable.getCause() method.
-        for (Future<Void> websiteFuture : websitesFutureList) {
-            websiteFuture.get();
+        try {
+            for (Future<Void> websiteFuture : websitesFutureList) {
+                websiteFuture.get();
+            }
+        } catch (Exception e) {
+            // Simply propagate the exception back to parent.
+            throw e;
+        } finally {
+            // Always make sure threads are shutdown; otherwise, it will hang the whole program.
+            executorService.shutdown();
         }
 
-        executorService.shutdown();
         return website;
     }
 
@@ -77,11 +84,17 @@ public class CallableCrawlAndTranslateWebsiteTask implements Callable<Website> {
 
         // Join all tasks' threads and throw (propagate) ExecutionException if the underlying task threw an exception.
         // The underlying exception/cause will be available through Throwable.getCause() method.
-        for (Future<Website> websiteFuture : websitesFutureList) {
-            websiteFuture.get();
+        try {
+            for (Future<Website> websiteFuture : websitesFutureList) {
+                websiteFuture.get();
+            }
+        } catch (Exception e) {
+            // Simply propagate the exception back to parent.
+            throw e;
+        } finally {
+            // Always make sure threads are shutdown.
+            executorService.shutdown();
         }
-
-        executorService.shutdown();
     }
 
     public static void TranslateWebsiteHeadings(Website website, Translator translator, String targetLanguageCode)

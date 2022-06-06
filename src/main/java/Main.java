@@ -80,15 +80,18 @@ public class Main {
                 summaryFileWriter.write(markdownStringBuilder.toString());
             } catch (ExecutionException e) {
                 PrintFormattedInfoAboutExecutionExceptionCause(e, website);
+            } finally {
+                executorService.shutdownNow();
             }
+
         }
 
-        executorService.shutdown();
         summaryFileWriter.close();
     }
 
     private static void PrintFormattedInfoAboutExecutionExceptionCause(ExecutionException executionException, Website crawledWebsite) {
-        Throwable cause = executionException.getCause();
+        // Pay attention to the double getCause() call.
+        Throwable cause = executionException.getCause().getCause();
 
         if (cause instanceof IOException) {
             System.err.println("IOException occurred while trying to fetch website.");
@@ -101,7 +104,7 @@ public class Main {
             System.err.println("Possible causes: no source text has been defined, unsupported target language code.");
         } else if (cause instanceof TranslationNotSuccessfulException) {
             System.err.println("TranslationNotSuccessfulException occurred while trying to translate website headings.");
-            System.err.println("Some possible causes: ");
+            System.err.println("Some possible causes: no connection to the server, invalid authentication token, access denied.");
         } else {
             System.err.println("Unexpected exception has been thrown while trying to fetch and/or translate website.");
         }
