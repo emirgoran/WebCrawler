@@ -1,4 +1,3 @@
-import Data.Heading;
 import Data.Website;
 import Exceptions.TranslationInvalidArgumentException;
 import Exceptions.TranslationNotSuccessfulException;
@@ -7,7 +6,6 @@ import Parsers.ArgumentsParser;
 import Parsers.DocumentParser;
 import Parsers.JsoupDocumentParser;
 import Translation.Translator;
-import Translation.Translation;
 import Translation.JsoupTranslatorApi;
 import Translation.TranslatorService;
 
@@ -15,14 +13,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import static Crawlers.WebsiteCrawler.CrawlWebsiteHeadingsAndLinkedPages;
+import java.util.concurrent.*;
 
 public class Main {
     public final static String DEFAULT_SUMMARY_FILE_PATH = new File("summary.md").getAbsolutePath();
-    public static final int MAX_URL_DEPTH = 1;
+    public static final int MAX_URL_DEPTH = 2;
 
     public static void main(String[] args) throws IOException {
 
@@ -51,75 +46,51 @@ public class Main {
             System.err.println("Could not find any text to translate!");
         } catch (TranslationNotSuccessfulException e) {
             System.err.println("An error occurred during translation procedure!");
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
         }
 
         System.out.println("Output file: " + DEFAULT_SUMMARY_FILE_PATH);
     }
 
     public static void TranslateDocumentAndWriteToFile(DocumentParser documentParser, String[] urls, Integer maxHeadingsDepth, Translator translator, String targetLanguageCode)
-            throws IOException, TranslationInvalidArgumentException, TranslationNotSuccessfulException {
+            throws IOException, TranslationInvalidArgumentException, TranslationNotSuccessfulException, InterruptedException, ExecutionException
+    {
         FileWriter summaryFileWriter = new FileWriter(DEFAULT_SUMMARY_FILE_PATH);
+        ExecutorService executorService = Executors.newFixedThreadPool(urls.length);
+        ArrayList<Callable<Website>> tasks = new ArrayList<>(urls.length);
 
-        List<Website> websitesList = new ArrayList<>();
-
+        // Initialize empty websites and create crawling&translating tasks for them.
         for (int i = 0; i < urls.length; i++) {
             Website website = new Website(urls[i], Website.WebsiteStatus.NOT_CRAWLED, maxHeadingsDepth);
-            website.setMaxUrlDepth(MAX_URL_DEPTH);
-            websitesList.add(website);
+            tasks.add(new CallableCrawlAndTranslateWebsiteTask(website, documentParser, translator, targetLanguageCode, maxHeadingsDepth, MAX_URL_DEPTH));
         }
 
-        CrawlAndTranslateWebsitesRecursively(websitesList, documentParser, translator, targetLanguageCode, maxHeadingsDepth, MAX_URL_DEPTH);
+        // Invoke all website crawling&translating tasks.
+        List<Future<Website>> websitesFutureList = executorService.invokeAll(tasks);
 
-        for (Website website : websitesList) {
-            StringBuilder markdownStringBuilder = MarkdownWebsiteSummary.CreateSummaryForWebsite(website, website.getLinkedTranslation().getSourceLanguage(), website.getLinkedTranslation().getTargetLanguage());
-            summaryFileWriter.write(markdownStringBuilder.toString());
+        // Acts like the join() method from Thread.
+        for (Future<Website> websiteFuture : websitesFutureList) {
+            try {
+                // This call will block until the underlying task is finished, and will throw an exception if the underlying task threw an exception.
+                Website website = websiteFuture.get();
+
+                // Create a summary and send it to the writer.
+                StringBuilder markdownStringBuilder = MarkdownWebsiteSummary.CreateSummaryForWebsite(website, website.getLinkedTranslation().getSourceLanguage(), website.getLinkedTranslation().getTargetLanguage());
+                summaryFileWriter.write(markdownStringBuilder.toString());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                // TODO: Try to get the underlying cause/exception!
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
+        executorService.shutdown();
         summaryFileWriter.close();
-    }
-
-    public static void CrawlAndTranslateWebsitesRecursively(List<Website> websitesList, DocumentParser documentParser, Translator translator, String targetLanguageCode, int maxHeadingsDepth, int untilDepth)
-            throws TranslationInvalidArgumentException, TranslationNotSuccessfulException, IOException {
-
-        // Attention: Recursion stop condition!
-        if (untilDepth-- <= 0) {
-            return;
-        }
-
-        ExecutorService executor = Executors.newFixedThreadPool(websitesList.size());
-
-        for (Website website : websitesList) {
-            // Crawl website headings and linked pages, then immediately start crawling linked pages in a multithreaded manner.
-            CrawlWebsiteHeadingsAndLinkedPages(documentParser, website, maxHeadingsDepth);
-
-            // Attention: Recursive call is here (multithreaded, non-blocking)!
-            CrawlAndTranslateWebsitesRecursively(website.getLinkedWebsitesList(), documentParser, translator, targetLanguageCode, maxHeadingsDepth, untilDepth);
-
-            // After starting the recursive, multithreaded call we can start translation as it is independent of the recursive crawling.
-            TranslateWebsiteHeadings(website, translator, targetLanguageCode);
-
-            // Let the website know its (inverse) depth relative to the root parent (optional, future proofing).
-            website.setMaxUrlDepth(untilDepth + 1);
-        }
-    }
-
-    /**
-     * Translate website headings and return the Translation object.
-     */
-    public static void TranslateWebsiteHeadings(Website website, Translator translator, String targetLanguageCode)
-            throws TranslationInvalidArgumentException, TranslationNotSuccessfulException {
-        List<String> headingsStringList = new LinkedList<>();
-
-        for (Heading heading : website.getHeadingsList()) {
-            headingsStringList.add(heading.getText());
-        }
-
-        Translation translation = translator.TranslateText(headingsStringList.toArray(new String[0]), targetLanguageCode);
-
-        for (int i = 0; i < translation.getTranslatedText().length; i++) {
-            website.getHeadingsList().get(i).setText(translation.getTranslatedText()[i]);
-        }
-
-        website.setLinkedTranslation(translation);
     }
 }
