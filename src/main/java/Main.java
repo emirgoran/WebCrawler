@@ -55,7 +55,6 @@ public class Main {
     private static void TranslateDocumentAndWriteToFile(DocumentParser documentParser, String[] urls, Integer maxHeadingsDepth, Translator translator, String targetLanguageCode)
             throws IOException, InterruptedException {
         FileWriter summaryFileWriter = new FileWriter(DEFAULT_SUMMARY_FILE_PATH);
-        ExecutorService executorService = Executors.newFixedThreadPool(urls.length);
         ArrayList<Website> websiteArrayList = new ArrayList<>(urls.length);
         ArrayList<Callable<Website>> tasks = new ArrayList<>(urls.length);
 
@@ -67,6 +66,7 @@ public class Main {
         }
 
         // Invoke all website crawling and translating tasks.
+        ExecutorService executorService = Executors.newFixedThreadPool(urls.length);
         List<Future<Website>> websitesFutureList = executorService.invokeAll(tasks);
 
         // Acts like the join() method from Thread (initial order is preserved).

@@ -43,7 +43,6 @@ public class CallableCrawlAndTranslateWebsiteTask implements Callable<Website> {
         ArrayList<Callable<Website>> tasks = new ArrayList<>(2);
         tasks.add(GetCrawlAndTranslateWebsitesRecursivelyCallableTask(website, documentParser, translator, targetLanguageCode, maxHeadingsDepth, untilDepth));
         tasks.add(GetTranslateWebsiteHeadingsCallableTask(website, translator, targetLanguageCode));
-
         List<Future<Website>> websitesFutureList = executorService.invokeAll(tasks);
 
         // Join all tasks' threads and throw (propagate) ExecutionException if the underlying task threw an exception.
@@ -72,7 +71,6 @@ public class CallableCrawlAndTranslateWebsiteTask implements Callable<Website> {
             return;
         }
 
-        ExecutorService executorService = Executors.newFixedThreadPool(website.getLinkedWebsitesList().size());
         ArrayList<Callable<Website>> tasks = new ArrayList<>(website.getLinkedWebsitesList().size());
 
         // TODO: Don't forget to catch exceptions and route them back to the caller somehow!
@@ -80,6 +78,7 @@ public class CallableCrawlAndTranslateWebsiteTask implements Callable<Website> {
             tasks.add(new CallableCrawlAndTranslateWebsiteTask(innerWebsite, documentParser, translator, targetLanguageCode, maxHeadingsDepth, untilDepthNew - 1));
         }
 
+        ExecutorService executorService = Executors.newFixedThreadPool(website.getLinkedWebsitesList().size());
         List<Future<Website>> websitesFutureList = executorService.invokeAll(tasks);
 
         // Join all tasks' threads and throw (propagate) ExecutionException if the underlying task threw an exception.
@@ -97,7 +96,7 @@ public class CallableCrawlAndTranslateWebsiteTask implements Callable<Website> {
         }
     }
 
-    public static void TranslateWebsiteHeadings(Website website, Translator translator, String targetLanguageCode)
+    private static void TranslateWebsiteHeadings(Website website, Translator translator, String targetLanguageCode)
             throws TranslationInvalidArgumentException, TranslationNotSuccessfulException {
         List<String> headingsStringList = new LinkedList<>();
 
