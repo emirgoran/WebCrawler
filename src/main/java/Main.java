@@ -19,31 +19,32 @@ import java.util.concurrent.*;
 
 public class Main {
     private final static String DEFAULT_SUMMARY_FILE_PATH = new File("summary.md").getAbsolutePath();
-    private static final int MAX_URL_DEPTH = 1;
 
     public static void main(String[] args) {
 
         Translator translator = new TranslatorService(new JsoupTranslatorApi());
         DocumentParser documentParser = new JsoupDocumentParser();
 
-        if (args.length < 3) {
-            System.err.println("Invalid arguments.\nCorrect format <HEADINGS_DEPTH> <TARGET_LANGUAGE_CODE> <URL ...>" +
-                    "where DEPTH is an integer greater than 0, and TARGET LANGUAGE CODE is one of the following:\n" +
+        if (args.length < 4) {
+            System.err.println("Invalid arguments.\nCorrect format <MAX_HEADINGS_DEPTH> <TARGET_LANGUAGE_CODE> <URL ...>" +
+                    "where MAX_HEADINGS_DEPTH is an integer greater than 0, and TARGET_LANGUAGE_CODE is one of the following:\n" +
                     translator.GetTargetLanguagesListFormatted());
 
             return;
         }
 
         Integer maxHeadingDepth = ArgumentsParser.ParseDepth(args[0]);
-        String targetLanguage = args[1];
-        String[] urls = Arrays.copyOfRange(args, 2, args.length);
+        Integer maxWebsiteDepth = ArgumentsParser.ParseDepth(args[1]);
 
-        if (!ArgumentsParser.ValidateDepth(maxHeadingDepth) || !ArgumentsParser.ValidateLanguage(translator, targetLanguage)|| !ArgumentsParser.ValidateUrls(documentParser, urls)) {
+        String targetLanguage = args[2];
+        String[] urls = Arrays.copyOfRange(args, 3, args.length);
+
+        if (!ArgumentsParser.ValidateDepth(maxHeadingDepth) || !ArgumentsParser.ValidateDepth(maxWebsiteDepth) || !ArgumentsParser.ValidateLanguage(translator, targetLanguage)|| !ArgumentsParser.ValidateUrls(documentParser, urls)) {
             return;
         }
 
         try {
-            TranslateDocumentAndWriteToFile(documentParser, urls, maxHeadingDepth, translator, targetLanguage);
+            TranslateDocumentAndWriteToFile(documentParser, urls, maxHeadingDepth, maxWebsiteDepth, translator, targetLanguage);
             System.out.println("Output file: " + DEFAULT_SUMMARY_FILE_PATH);
         } catch (IOException e) {
             System.err.println("IOException: Could not create, append or save the summary file!");
@@ -52,7 +53,7 @@ public class Main {
         }
     }
 
-    private static void TranslateDocumentAndWriteToFile(DocumentParser documentParser, String[] urls, Integer maxHeadingsDepth, Translator translator, String targetLanguageCode)
+    private static void TranslateDocumentAndWriteToFile(DocumentParser documentParser, String[] urls, Integer maxHeadingsDepth, Integer maxWebsiteDepth, Translator translator, String targetLanguageCode)
             throws IOException, InterruptedException {
         FileWriter summaryFileWriter = new FileWriter(DEFAULT_SUMMARY_FILE_PATH);
         ArrayList<Website> websiteArrayList = new ArrayList<>(urls.length);
@@ -62,7 +63,7 @@ public class Main {
         for (int i = 0; i < urls.length; i++) {
             Website website = new Website(urls[i], Website.WebsiteStatus.NOT_CRAWLED, maxHeadingsDepth);
             websiteArrayList.add(website);
-            tasks.add(new CallableCrawlAndTranslateWebsiteTask(website, documentParser, translator, targetLanguageCode, maxHeadingsDepth, MAX_URL_DEPTH));
+            tasks.add(new CallableCrawlAndTranslateWebsiteTask(website, documentParser, translator, targetLanguageCode, maxHeadingsDepth, maxWebsiteDepth));
         }
 
         // Invoke all website crawling and translating tasks.
@@ -79,7 +80,7 @@ public class Main {
                 websiteFuture.get();
 
                 // Create a summary and send it to the writer.
-                StringBuilder markdownStringBuilder = MarkdownWebsiteSummary.CreateSummaryForWebsite(website, website.getLinkedTranslation().getSourceLanguage(), website.getLinkedTranslation().getTargetLanguage());
+                StringBuilder markdownStringBuilder = MarkdownWebsiteSummary.CreateSummaryForWebsite(website, website.getLinkedTranslation().getSourceLanguage(), website.getLinkedTranslation().getTargetLanguage(), maxWebsiteDepth);
                 summaryFileWriter.write(markdownStringBuilder.toString());
             } catch (ExecutionException e) {
                 PrintFormattedInfoAboutExecutionExceptionCause(e, website);

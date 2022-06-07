@@ -9,22 +9,23 @@ public class MarkdownWebsiteSummary {
 
     private final static String NEW_LINE_MD = "  \n";
 
-    public static StringBuilder CreateSummaryForWebsite(Website website, String sourceLanguageName, String targetLanguageName) {
+    public static StringBuilder CreateSummaryForWebsite(Website website, String sourceLanguageName, String targetLanguageName, int maxWebsitesDepth) {
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(GetBasicInfoMarkdownString(website.getURL(), website.getMaxHeadingsDepth(), sourceLanguageName, targetLanguageName));
+        stringBuilder.append(GetBasicInfoMarkdownString(website.getURL(), website.getMaxHeadingsDepth(), maxWebsitesDepth, sourceLanguageName, targetLanguageName));
 
         WriteWebsiteMarkdownRecursive(website, stringBuilder, 0);
 
         return stringBuilder;
     }
 
-    public static String GetBasicInfoMarkdownString(String URL, int headingsDepth, String sourceLanguage, String targetLanguage) {
+    public static String GetBasicInfoMarkdownString(String URL, int maxHeadingsDepth, int maxWebsitesDepth, String sourceLanguage, String targetLanguage) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("Input URL: " + URL + NEW_LINE_MD);
-        sb.append("Max headings depth: " + headingsDepth + NEW_LINE_MD);
+        sb.append("Max headings depth: " + maxHeadingsDepth + NEW_LINE_MD);
+        sb.append("Max websites depth: " + maxWebsitesDepth + NEW_LINE_MD);
         sb.append("Source language: " + sourceLanguage +" (auto-detected)" + NEW_LINE_MD);
         sb.append("Target language: " + targetLanguage + NEW_LINE_MD);
         sb.append("Summary:" + NEW_LINE_MD);

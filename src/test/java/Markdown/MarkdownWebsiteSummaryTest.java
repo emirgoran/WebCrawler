@@ -21,12 +21,13 @@ class MarkdownWebsiteSummaryTest {
 
     @Test
     void getBasicInfoMarkdownString() {
-        String markdownString = MarkdownWebsiteSummary.GetBasicInfoMarkdownString("MY URL", 3, "English", "Italian");
+        String markdownString = MarkdownWebsiteSummary.GetBasicInfoMarkdownString("MY URL", 3, 1, "English", "Italian");
 
         StringBuilder sb = new StringBuilder();
 
         sb.append("Input URL: MY URL  \n");
         sb.append("Max headings depth: 3  \n");
+        sb.append("Max websites depth: 1  \n");
         sb.append("Source language: English (auto-detected)  \n");
         sb.append("Target language: Italian  \n");
         sb.append("Summary:  \n");
