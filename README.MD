@@ -3,7 +3,7 @@
 2. in Translation.JsoupTranslatorApi: AUTH_KEY - authentication key to the DeepL translation API (use your own, you will need to register with a credit card for free 500.000 characters/month)
 
 ### The program accepts exactly 3 arguments (in this exact order):
-1. MAX_HEADING_DEPTH - represents level of HTML headings (an integer in range from 1 to 6)
+1. MAX_HEADINGS_DEPTH - represents level of HTML headings (an integer in range from 1 to 6)
 2. MAX_WEBSITES_DEPTH - represents depth of crawling of websites (a positive integer)
 3. LANGUAGE_CODE - an abbreviation of a language (e.g. IT for Italian, DE for German, etc.)
 4. URLs - a list of URLs to the web pages you want to crawl (space separated)
@@ -40,7 +40,7 @@ NL: Dutch
 
 ### Executing the program
 To run the program in Java you can execute the Main class with following arguments:  
-<MAX_HEADING_DEPTH> <MAX_WEBSITES_DEPTH> <LANGUAGE_CODE> <URL> [URL ...]
+<MAX_HEADINGS_DEPTH> <MAX_WEBSITES_DEPTH> <LANGUAGE_CODE> <URL> [URL ...]
 
 To run the program with Maven you can execute the following:  
 mvn exec:java -Dexec.mainClass=Main "-Dexec.args=YOUR ARGUMENTS HERE"  
