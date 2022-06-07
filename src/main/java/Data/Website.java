@@ -14,37 +14,16 @@ public class Website {
     private String URL;
     private List<Heading> headingsList;
     private List<Website> linkedWebsitesList;
-
     private WebsiteStatus status;
     private int maxHeadingsDepth;
-    private int maxUrlDepth;
-
-    public Translation getLinkedTranslation() {
-        return linkedTranslation;
-    }
-
-    public void setLinkedTranslation(Translation linkedTranslation) {
-        this.linkedTranslation = linkedTranslation;
-    }
-
     private Translation linkedTranslation;
-
-    public Website(String URL, int maxHeadingsDepth, int maxUrlDepth) {
-        this.URL = URL;
-        this.headingsList = new ArrayList<>();
-        this.linkedWebsitesList = new ArrayList<>();
-
-        this.status = WebsiteStatus.BROKEN;
-        this.maxHeadingsDepth = maxHeadingsDepth;
-        this.maxUrlDepth = maxUrlDepth;
-    }
 
     public Website(String URL, WebsiteStatus initialStatus, int maxHeadingsDepth) {
         this.URL = URL;
-        this.status = initialStatus;
-        this.maxHeadingsDepth = maxHeadingsDepth;
         this.headingsList = new ArrayList<>();
         this.linkedWebsitesList = new ArrayList<>();
+        this.status = initialStatus;
+        this.maxHeadingsDepth = maxHeadingsDepth;
     }
 
     public String getURL() {
@@ -63,14 +42,6 @@ public class Website {
         return linkedWebsitesList;
     }
 
-    public void setMaxUrlDepth(int maxUrlDepth) {
-        this.maxUrlDepth = maxUrlDepth;
-    }
-
-    public int getMaxUrlDepth() {
-        return maxUrlDepth;
-    }
-
     public int getMaxHeadingsDepth() {
         return maxHeadingsDepth;
     }
@@ -79,11 +50,15 @@ public class Website {
         this.headingsList = headingsList;
     }
 
-    public void setLinkedWebsitesList(List<Website> linkedWebsitesList) {
-        this.linkedWebsitesList = linkedWebsitesList;
-    }
-
     public void setStatus(WebsiteStatus status) {
         this.status = status;
+    }
+
+    public Translation getLinkedTranslation() {
+        return linkedTranslation;
+    }
+
+    public void setLinkedTranslation(Translation linkedTranslation) {
+        this.linkedTranslation = linkedTranslation;
     }
 }

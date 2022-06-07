@@ -35,9 +35,6 @@ public class CallableCrawlAndTranslateWebsiteTask implements Callable<Website> {
         // Crawl website headings and linked pages.
         CrawlWebsiteHeadingsAndLinkedPages(documentParser, website, maxHeadingsDepth);
 
-        // Let the website know its (inverse) depth relative to the root parent (optional, future proofing).
-        website.setMaxUrlDepth(untilDepth);
-
         // ExecutorService for two tasks we need to parallelize: Crawling, Translating.
         ExecutorService executorService = Executors.newFixedThreadPool(2);
         ArrayList<Callable<Website>> tasks = new ArrayList<>(2);

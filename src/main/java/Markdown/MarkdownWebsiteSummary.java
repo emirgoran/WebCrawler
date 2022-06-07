@@ -13,18 +13,17 @@ public class MarkdownWebsiteSummary {
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(GetBasicInfoMarkdownString(website.getURL(), website.getMaxHeadingsDepth(), website.getMaxUrlDepth(), sourceLanguageName, targetLanguageName));
+        stringBuilder.append(GetBasicInfoMarkdownString(website.getURL(), website.getMaxHeadingsDepth(), sourceLanguageName, targetLanguageName));
 
         WriteWebsiteMarkdownRecursive(website, stringBuilder, 0);
 
         return stringBuilder;
     }
 
-    public static String GetBasicInfoMarkdownString(String URL, int headingsDepth, int urlDepth, String sourceLanguage, String targetLanguage) {
+    public static String GetBasicInfoMarkdownString(String URL, int headingsDepth, String sourceLanguage, String targetLanguage) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("Input URL: " + URL + NEW_LINE_MD);
-        sb.append("Max URL depth: " + urlDepth + NEW_LINE_MD);
         sb.append("Max headings depth: " + headingsDepth + NEW_LINE_MD);
         sb.append("Source language: " + sourceLanguage +" (auto-detected)" + NEW_LINE_MD);
         sb.append("Target language: " + targetLanguage + NEW_LINE_MD);

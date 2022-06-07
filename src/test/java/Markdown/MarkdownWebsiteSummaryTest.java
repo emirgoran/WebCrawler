@@ -21,12 +21,11 @@ class MarkdownWebsiteSummaryTest {
 
     @Test
     void getBasicInfoMarkdownString() {
-        String markdownString = MarkdownWebsiteSummary.GetBasicInfoMarkdownString("MY URL", 3, 1, "English", "Italian");
+        String markdownString = MarkdownWebsiteSummary.GetBasicInfoMarkdownString("MY URL", 3, "English", "Italian");
 
         StringBuilder sb = new StringBuilder();
 
         sb.append("Input URL: MY URL  \n");
-        sb.append("Max URL depth: 1  \n");
         sb.append("Max headings depth: 3  \n");
         sb.append("Source language: English (auto-detected)  \n");
         sb.append("Target language: Italian  \n");
@@ -120,8 +119,7 @@ class MarkdownWebsiteSummaryTest {
     }
 
     private Website prepareSimpleWebsiteOk() {
-        Website website = new Website("MY URL", 3, 0);
-        website.setStatus(Website.WebsiteStatus.OK);
+        Website website = new Website("MY URL", Website.WebsiteStatus.OK, 3);
 
         List<Heading> headingsList = new ArrayList<>();
         headingsList.add(new Heading(Heading.HeadingLevel.H1, "Heading 1"));
@@ -133,14 +131,13 @@ class MarkdownWebsiteSummaryTest {
     }
 
     private Website prepareOneLevelSimpleWebsiteOk() {
-        Website website = new Website("MY URL", 3, 1);
-        website.setStatus(Website.WebsiteStatus.OK);
+        Website website = new Website("MY URL", Website.WebsiteStatus.OK, 3);
 
         website.getHeadingsList().add(new Heading(Heading.HeadingLevel.H1, "Heading 1"));
         website.getHeadingsList().add(new Heading(Heading.HeadingLevel.H2, "Heading 2"));
         website.getHeadingsList().add(new Heading(Heading.HeadingLevel.H3, "Heading 3"));
 
-        Website websiteInner = new Website("MY URL 2", 3, 0);
+        Website websiteInner = new Website("MY URL 2", Website.WebsiteStatus.OK, 3);
         websiteInner.setStatus(Website.WebsiteStatus.OK);
 
         websiteInner.getHeadingsList().add(new Heading(Heading.HeadingLevel.H1, "Heading 1"));
