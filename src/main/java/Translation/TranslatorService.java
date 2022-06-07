@@ -11,8 +11,8 @@ import java.util.Map;
 
 public class TranslatorService implements Translator {
 
-    protected HashMap<String, String> TARGET_LANGUAGES;
-    protected HashMap<String, String> SOURCE_LANGUAGES;
+    private HashMap<String, String> TARGET_LANGUAGES;
+    private HashMap<String, String> SOURCE_LANGUAGES;
     TranslatorApi translatorApi;
 
     public TranslatorService(TranslatorApi translatorApi) {
