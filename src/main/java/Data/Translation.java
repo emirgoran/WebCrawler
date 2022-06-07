@@ -1,4 +1,4 @@
-package Translation;
+package Data;
 
 public class Translation {
     private String originalText[];

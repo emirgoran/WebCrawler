@@ -1,7 +1,5 @@
 package Data;
 
-import Translation.Translation;
-
 import java.util.ArrayList;
 import java.util.List;
 

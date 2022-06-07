@@ -1,5 +1,6 @@
 package Translation;
 
+import Data.Translation;
 import Exceptions.TranslationInvalidArgumentException;
 import Exceptions.TranslationNotSuccessfulException;
 

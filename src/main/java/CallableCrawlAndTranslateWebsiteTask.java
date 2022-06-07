@@ -3,7 +3,7 @@ import Data.Website;
 import Exceptions.TranslationInvalidArgumentException;
 import Exceptions.TranslationNotSuccessfulException;
 import Parsers.DocumentParser;
-import Translation.Translation;
+import Data.Translation;
 import Translation.Translator;
 
 import java.io.IOException;
