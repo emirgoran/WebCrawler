@@ -39,7 +39,7 @@ RO: Romanian
 NL: Dutch
 
 ### Executing the program
-To run the program in Java you can execute the Main class with following arguments:
+To run the program in Java you can execute the Main class with following arguments:  
 <MAX_HEADING_DEPTH> <MAX_WEBSITES_DEPTH> <LANGUAGE_CODE> <URL> [URL ...]
 
 To run the program with Maven you can execute the following:  
