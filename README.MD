@@ -2,7 +2,7 @@
 1. in Crawlers.LinksCrawler: MAX_LINKED_WEBSITES (default = 3) - means only this number of links will be crawled from websites (on all depths/levels)
 2. in Translation.JsoupTranslatorApi: AUTH_KEY - authentication key to the DeepL translation API (use your own, you will need to register with a credit card for free 500.000 characters/month)
 
-### The program accepts exactly 3 arguments (in this exact order):
+### The program accepts exactly 4 arguments (in this exact order; last argument is a list):
 1. MAX_HEADINGS_DEPTH - represents level of HTML headings (an integer in range from 1 to 6)
 2. MAX_WEBSITES_DEPTH - represents depth of crawling of websites (a positive integer)
 3. LANGUAGE_CODE - an abbreviation of a language (e.g. IT for Italian, DE for German, etc.)
