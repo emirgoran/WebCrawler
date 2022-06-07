@@ -43,7 +43,7 @@ To run the program in Java you can execute the Main class with following argumen
 <MAX_HEADING_DEPTH> <MAX_WEBSITES_DEPTH> <LANGUAGE_CODE> <URL> [URL ...]
 
 To run the program with Maven you can execute the following:  
-mvn exec:java -Dexec.mainClass=Main "-Dexec.args=<YOUR ARGUMENTS HERE>"  
+mvn exec:java -Dexec.mainClass=Main "-Dexec.args=YOUR ARGUMENTS HERE"  
 For example:  
 mvn exec:java -Dexec.mainClass=Main "-Dexec.args=6 2 DE https://www.github.com https://www.github.com"
 
