@@ -1,9 +1,11 @@
 package Translation;
 
-import org.json.JSONArray;
+import Data.Translation;
+
+import java.util.HashMap;
 
 public interface TranslatorApi {
-    JSONArray GetTranslationsJsonArray(String[] originalTextArr, String targetLanguageCode);
-
-    JSONArray GetLanguagesJsonArray(boolean isTarget);
+    Translation GetTranslation(String[] originalTextArr, String targetLanguageCode);
+    HashMap<String, String> GetAvailableTargetLanguagesHashMap();
+    HashMap<String, String> GetAvailableSourceLanguagesHashMap();
 }

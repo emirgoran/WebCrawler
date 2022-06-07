@@ -28,7 +28,7 @@ class TranslatorServiceTest {
         Translation translation = translatorService.TranslateText(originalText, "EN");
 
         Assertions.assertEquals("English", translation.getSourceLanguage());
-        Assertions.assertEquals("English", translation.getTargetLanguage());
+        Assertions.assertEquals("German", translation.getTargetLanguage());
         Assertions.assertEquals(1, translation.getTranslatedText().length);
         Assertions.assertEquals(expectedTranslationText[0], translation.getTranslatedText()[0]);
     }
@@ -70,15 +70,6 @@ class TranslatorServiceTest {
     }
 
     @Test
-    void getTargetLanguageNameByLanguageCode() {
-        TranslatorService translatorService = new TranslatorService(getTestTranslatorApi());
-
-        String language = translatorService.GetTargetLanguageNameByLanguageCode("EN");
-
-        Assertions.assertEquals("English", language);
-    }
-
-    @Test
     void getTargetLanguagesListFormatted() {
         TranslatorService translatorService = new TranslatorService(getTestTranslatorApi());
 
@@ -91,28 +82,10 @@ class TranslatorServiceTest {
     }
 
     @Test
-    void getSourceLanguageNameByLanguageCode() {
-        TranslatorService translatorService = new TranslatorService(getTestTranslatorApi());
-
-        String language = translatorService.GetSourceLanguageNameByLanguageCode("DE");
-
-        Assertions.assertEquals("German", language);
-    }
-
-    @Test
-    void getSourceLanguageFromTranslationJsonArray() {
-        TranslatorService translatorService = new TranslatorService(getTestTranslatorApi());
-
-        String detectedLanguage = translatorService.GetSourceLanguageFromTranslationJsonArray(getTranslationTestJsonArray());
-
-        Assertions.assertEquals("English", detectedLanguage);
-    }
-
-    @Test
     void getLanguagesHashMap() {
         Document document = new Document("");
-        document.append(getLanguagesTestJsonArray().toString());
-        HashMap<String, String> languagesHashMap = TranslatorService.GetLanguagesHashMap(getLanguagesTestJsonArray());
+        document.append(getTestLanguagesHashMap().toString());
+        HashMap<String, String> languagesHashMap = JsoupTranslatorApi.GetLanguagesHashMap(getLanguagesTestJsonArray());
 
         Assertions.assertEquals(3, languagesHashMap.size());
         Assertions.assertEquals("Italian", languagesHashMap.get("IT"));
@@ -122,8 +95,8 @@ class TranslatorServiceTest {
 
     @Test
     void convertLanguagesJsonArrayToHashMap() {
-        JSONArray languagesJsonArr = getLanguagesTestJsonArray();
-        HashMap<String, String> languagesHashMap = TranslatorService.ConvertLanguagesJsonArrayToHashMap(languagesJsonArr);
+        JSONArray languagesJsonArr = getTranslationTestJsonArray();
+        HashMap<String, String> languagesHashMap = JsoupTranslatorApi.ConvertLanguagesJsonArrayToHashMap(getLanguagesTestJsonArray());
 
         Assertions.assertEquals(3, languagesHashMap.size());
         Assertions.assertEquals("Italian", languagesHashMap.get("IT"));
@@ -140,7 +113,7 @@ class TranslatorServiceTest {
             translationsJsonArr.put(translationJsonObj);
         }
 
-        String[] result = TranslatorService.ConvertTranslationsJsonArrayToStringArray(translationsJsonArr);
+        String[] result = JsoupTranslatorApi.ConvertTranslationsJsonArrayToStringArray(translationsJsonArr);
 
         Assertions.assertEquals(3, result.length);
         for (int i = 0; i < 3; i++) {
@@ -151,37 +124,30 @@ class TranslatorServiceTest {
     private TranslatorApi getTestTranslatorApi() {
         TranslatorApi translatorApi = mock(TranslatorApi.class);
 
-        when(translatorApi.GetLanguagesJsonArray(false))
-                .thenReturn(getLanguagesTestJsonArray());
+        when(translatorApi.GetAvailableSourceLanguagesHashMap())
+                .thenReturn(getTestLanguagesHashMap());
 
-        when(translatorApi.GetLanguagesJsonArray(true))
-                .thenReturn(getLanguagesTestJsonArray());
+        when(translatorApi.GetAvailableTargetLanguagesHashMap())
+                .thenReturn(getTestLanguagesHashMap());
 
-        when(translatorApi.GetTranslationsJsonArray(any(), anyString())).thenReturn(getTranslationTestJsonArray());
+        when(translatorApi.GetTranslation(any(), anyString())).thenReturn(getTestTranslation());
 
         return translatorApi;
     }
 
-    private JSONArray getLanguagesTestJsonArray() {
-        JSONArray languagesJsonArr = new JSONArray();
+    private HashMap<String, String> getTestLanguagesHashMap() {
 
-        JSONObject langJsonObj1 = new JSONObject();
-        langJsonObj1.put("language", "EN");
-        langJsonObj1.put("name", "English");
+        HashMap<String, String> languagesHashMap = new HashMap<>();
 
-        JSONObject langJsonObj2 = new JSONObject();
-        langJsonObj2.put("language", "DE");
-        langJsonObj2.put("name", "German");
+        languagesHashMap.put("EN", "English");
+        languagesHashMap.put("DE", "German");
+        languagesHashMap.put("IT", "Italian");
 
-        JSONObject langJsonObj3 = new JSONObject();
-        langJsonObj3.put("language", "IT");
-        langJsonObj3.put("name", "Italian");
+        return languagesHashMap;
+    }
 
-        languagesJsonArr.put(langJsonObj1);
-        languagesJsonArr.put(langJsonObj2);
-        languagesJsonArr.put(langJsonObj3);
-
-        return languagesJsonArr;
+    private Translation getTestTranslation() {
+        return new Translation(null, new String[] {"Translation"}, "English", "German");
     }
 
     private JSONArray getTranslationTestJsonArray() {
@@ -194,5 +160,28 @@ class TranslatorServiceTest {
         translationsJsonArr.put(translationJsonObj);
 
         return translationsJsonArr;
+    }
+
+    private JSONArray getLanguagesTestJsonArray() {
+        JSONArray languagesJsonArr = new JSONArray();
+
+        JSONObject langJsonObj1 = new JSONObject();
+        langJsonObj1.put("language", "EN");
+        langJsonObj1.put("name", "English");
+
+        JSONObject langJsonObj2 = new JSONObject();
+        langJsonObj2.put("language", "DE");
+        langJsonObj2.put("name", "German");
+        HashMap<String, String> languagesHashMap = new HashMap<>();
+
+        JSONObject langJsonObj3 = new JSONObject();
+        langJsonObj3.put("language", "IT");
+        langJsonObj3.put("name", "Italian");
+
+        languagesJsonArr.put(langJsonObj1);
+        languagesJsonArr.put(langJsonObj2);
+        languagesJsonArr.put(langJsonObj3);
+
+        return languagesJsonArr;
     }
 }
