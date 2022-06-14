@@ -23,6 +23,7 @@ public class WebsiteCrawler {
 
         if (webDocument == null) {
             website.setStatus(Website.WebsiteStatus.BROKEN);
+            return website;
         }
 
         website.setHeadingsList(GetHeadingsFromWebDocument(webDocument, maxHeadingsDepth));

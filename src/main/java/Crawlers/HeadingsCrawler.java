@@ -14,6 +14,10 @@ public class HeadingsCrawler {
     public static List<Heading> GetHeadingsFromWebDocument(WebDocument webDocument, Heading.HeadingLevel depth) {
         List<Heading> headingList = new ArrayList<>();
 
+        if (Heading.HeadingLevel.H0.equals(depth)) {
+            return headingList;
+        }
+
         List<WebElement> hTags = webDocument.selectElementsFromWebDocument(GetCssHeadingsQuery(depth));
 
         for (WebElement webElement : hTags) {
